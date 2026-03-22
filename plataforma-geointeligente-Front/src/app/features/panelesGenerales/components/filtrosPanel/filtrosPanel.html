@@ -1,0 +1,281 @@
+<!-- Filtros Section -->
+<div class="filters-section">
+  <div class="filters-header">
+    <div class="filters-title-wrap">
+      <h2 class="filters-title">Paneles Generales</h2>
+      <p class="filters-subtitle">
+        Visualización avanzada de datos epidemiológicos con métricas calculadas según estándares internacionales
+      </p>
+    </div>
+  </div>
+
+  <!-- Panel Selector -->
+  <div class="panel-selector-row">
+    <label><strong>Panel:</strong></label>
+    <select [(ngModel)]="currentPanelId" (ngModelChange)="onPanelSelect($event)">
+      <option [ngValue]="null">{{ noPanels ? 'No hay paneles guardados' : 'Seleccionar Panel' }}</option>
+      @for (p of panels; track p.idPanel) {
+      <option [ngValue]="p.idPanel">{{ p.nombrePanel }}</option>
+      }
+    </select>
+  </div>
+
+  <!-- No panels info -->
+  @if (noPanels && !parentLoading) {
+  <div class="no-panels-alert">
+    <mat-icon>info</mat-icon>
+    <span>No hay paneles guardados. Puedes configurar filtros y guardar un nuevo panel.</span>
+  </div>
+  }
+
+  <!-- Loading catalogs -->
+  @if (catalogosLoading) {
+  <div class="catalogs-loading">
+    <mat-progress-spinner diameter="24" mode="indeterminate"></mat-progress-spinner>
+    <span>Cargando catálogos...</span>
+  </div>
+  }
+
+  <!-- ===== FILTERS GRID ===== -->
+  @if (!catalogosLoading) {
+  <div class="filters-grid">
+
+    <!-- 1) Enfermedad – Categoría -->
+    <div class="filter-group filter-enfermedad">
+      <label class="filter-label">
+        <mat-icon class="filter-icon">coronavirus</mat-icon>
+        Categoría de Enfermedad
+      </label>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Todas las categorías</mat-label>
+        <input matInput
+               type="text"
+               [formControl]="categoriaCtrl"
+               [matAutocomplete]="autoCategoria"
+               (blur)="onCategoriaBlur()">
+        @if (categoriaCtrl.value) {
+        <button matSuffix class="clear-input-btn" type="button" (click)="clearCategoria()">
+          <mat-icon>close</mat-icon>
+        </button>
+        }
+        <mat-autocomplete #autoCategoria="matAutocomplete"
+                          [displayWith]="displayCategoria"
+                          (optionSelected)="onCategoriaSelected($event.option.value)">
+          @for (cat of filteredCategorias$ | async; track cat.codigoGrupo) {
+          <mat-option [value]="cat">
+            {{ cat.codigoGrupo }} - {{ cat.nombreEnfermedad }}
+          </mat-option>
+          }
+        </mat-autocomplete>
+        @if (categoriaInvalid) {
+        <mat-hint class="categoria-error-hint">Debes seleccionar una opción de la lista</mat-hint>
+        }
+      </mat-form-field>
+    </div>
+
+    <!-- 1b) Enfermedad – Subcategoría -->
+    <div class="filter-group filter-enfermedad-sub">
+      <label class="filter-label">
+        <mat-icon class="filter-icon">biotech</mat-icon>
+        Subcategoría
+      </label>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>{{ selectedCodigoGrupo ? 'Todas las subcategorías' : 'Selecciona una categoría primero' }}</mat-label>
+        <mat-select [(ngModel)]="selectedCodigoICD" [disabled]="!selectedCodigoGrupo || subcategoriasLoading">
+          <mat-option [value]="null">── Todas ──</mat-option>
+          @for (sub of subcategorias; track sub.codigoICD) {
+          <mat-option [value]="sub.codigoICD">
+            {{ sub.codigoICD }} – {{ sub.nombreEnfermedad }}
+          </mat-option>
+          }
+        </mat-select>
+        @if (subcategoriasLoading) {
+        <mat-progress-spinner
+          matSuffix
+          diameter="18"
+          mode="indeterminate">
+        </mat-progress-spinner>
+        }
+      </mat-form-field>
+    </div>
+
+    <!-- 2) Rango de Años – Inicio -->
+    <div class="filter-group filter-anio-inicio">
+      <label class="filter-label">
+        <mat-icon class="filter-icon">date_range</mat-icon>
+        Año Inicio
+      </label>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Desde</mat-label>
+        <mat-select [(ngModel)]="selectedAnioInicio" (ngModelChange)="onAnioInicioChange()">
+          @for (anio of aniosInicioDisponibles; track anio) {
+          <mat-option [value]="anio">
+            {{ anio }}
+          </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <!-- 2b) Rango de Años – Fin -->
+    <div class="filter-group filter-anio-fin">
+      <label class="filter-label">
+        <mat-icon class="filter-icon">event</mat-icon>
+        Año Fin
+      </label>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Hasta</mat-label>
+        <mat-select [(ngModel)]="selectedAnioFin" (ngModelChange)="onAnioFinChange()">
+          @for (anio of aniosFinDisponibles; track anio) {
+          <mat-option [value]="anio">
+            {{ anio }}
+          </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <!-- 3) Nacional / Estado -->
+    <div class="filter-group filter-estado">
+      <label class="filter-label">
+        <mat-icon class="filter-icon">location_on</mat-icon>
+        Estado
+      </label>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Nacional (todos)</mat-label>
+        <mat-select [(ngModel)]="selectedIdEstado">
+          <mat-option [value]="null">── Nacional ──</mat-option>
+          @for (estado of estados; track estado.idEstado) {
+          <mat-option [value]="estado.idEstado">
+            {{ geoStateName(estado) }}
+          </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <!-- 4) Grupo Etario -->
+    <div class="filter-group filter-edad">
+      <label class="filter-label">
+        <mat-icon class="filter-icon">groups</mat-icon>
+        Grupo Etario
+      </label>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Todos los grupos</mat-label>
+        <mat-select [(ngModel)]="selectedIdRangoEdad">
+          <mat-option [value]="null">── Todos ──</mat-option>
+          @for (rango of rangosEdad; track rango.idRangoEdad) {
+          <mat-option [value]="rango.idRangoEdad">
+            {{ rango.etiquetaRango }}
+          </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <!-- 5) Sexo -->
+    <div class="filter-group filter-sexo">
+      <label class="filter-label">
+        <mat-icon class="filter-icon">wc</mat-icon>
+        Sexo
+      </label>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Ambos</mat-label>
+        <mat-select [(ngModel)]="selectedIdSexo">
+          <mat-option [value]="null">── Ambos ──</mat-option>
+          @for (sexo of sexos; track sexo.idSexo) {
+          <mat-option [value]="sexo.idSexo">
+            {{ sexo.descripcion }}
+          </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <!-- 6) Institución -->
+    <div class="filter-group filter-institucion">
+      <label class="filter-label">
+        <mat-icon class="filter-icon">local_hospital</mat-icon>
+        Institución
+      </label>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Todas las instituciones</mat-label>
+        <mat-select [(ngModel)]="selectedClaveInstitucion">
+          <mat-option [value]="null">── Todas ──</mat-option>
+          @for (inst of instituciones; track inst.claveInstitucion) {
+          <mat-option [value]="inst.claveInstitucion">
+            {{ inst.institucion }}
+          </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <!-- 7) Estrato -->
+    <div class="filter-group filter-estrato">
+      <label class="filter-label">
+        <mat-icon class="filter-icon">layers</mat-icon>
+        Estrato
+      </label>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Todos los estratos</mat-label>
+        <mat-select [(ngModel)]="selectedEstrato">
+          <mat-option [value]="null">── Todos ──</mat-option>
+          @for (est of estratos; track est.estratoUnidad) {
+          <mat-option [value]="est.estratoUnidad">
+            {{ est.estratoUnidad }}
+          </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+  </div>
+  }
+
+  <!-- ===== ACTIONS ===== -->
+  <div class="actions-container">
+    <div class="filters-actions">
+      <button class="apply-filters-btn" (click)="applyFilters()" [disabled]="catalogosLoading || parentLoading">
+        <mat-icon>filter_list</mat-icon>
+        Aplicar Filtros
+      </button>
+      <button class="clear-filters-btn" (click)="clearFilters()" [disabled]="catalogosLoading">
+        <mat-icon>clear_all</mat-icon>
+        Limpiar
+      </button>
+    </div>
+    <div class="right-actions">
+      <div class="config-actions">
+        <button class="config-btn config-primary"
+                (click)="openSaveModal()"
+                [disabled]="!currentUserId">
+          <mat-icon>save</mat-icon>
+          Guardar Panel
+        </button>
+        @if (selectedPanel) {
+        <button class="config-btn config-update"
+                (click)="openUpdateModal()"
+                [disabled]="!currentUserId">
+          <mat-icon>update</mat-icon>
+          Actualizar
+        </button>
+        <button class="config-btn config-delete"
+                (click)="openDeleteModal()"
+                [disabled]="!currentUserId">
+          <mat-icon>delete</mat-icon>
+          Eliminar
+        </button>
+        }
+      </div>
+      <div class="export-button">
+        <button class="export-btn" (click)="onExportPDF()">
+          <mat-icon>picture_as_pdf</mat-icon>
+          Exportar PDF
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+

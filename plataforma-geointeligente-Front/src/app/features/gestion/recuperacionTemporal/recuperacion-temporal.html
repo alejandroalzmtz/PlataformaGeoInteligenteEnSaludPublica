@@ -1,0 +1,152 @@
+<div class="page">
+  <h1 class="title">Recuperación Temporal</h1>
+
+  <div
+    class="filters"
+    style="align-items: center; margin-bottom: 12px; justify-content: space-between"
+  >
+    <div class="search-input" style="flex: 1; max-width: 680px">
+      <mat-form-field appearance="outline" style="width: 100%">
+        <input
+          matInput
+          placeholder="Buscar"
+          name="search-recuperacion"
+          autocomplete="off"
+          [value]="q()"
+          (input)="onSearchInput($any($event.target).value)"
+        />
+      </mat-form-field>
+    </div>
+
+    <div
+      class="paginator-wrap"
+      style="display: flex; align-items: center; gap: 12px; margin-left: 12px"
+    >
+      <div class="paginator-column">
+        <div class="showing-report" style="opacity: 0.75; margin-bottom: 6px; text-align: right">
+          Mostrando {{ rows().length }} de {{ totalFiltered() }}
+        </div>
+        <div class="paginator-row" style="display: flex; align-items: center; gap: 8px">
+          <p-paginator
+            [rows]="pageSize()"
+            [first]="page() * pageSize()"
+            [totalRecords]="totalFiltered()"
+            (onPageChange)="pageChanged($event)"
+          ></p-paginator>
+          <select #sizeSel class="native-select" (change)="onPageSizeChange(sizeSel.value)">
+            <option *ngFor="let r of [10, 20, 30, 50, 100]" [value]="r" [selected]="r === pageSize()">
+              {{ r }}
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    *ngIf="loading(); else tableTmpl"
+    style="display: flex; justify-content: center; padding: 32px"
+  >
+    <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+  </div>
+
+  <ng-template #tableTmpl>
+    <div
+      *ngIf="!error(); else errTmpl"
+      class="table-wrap"
+      style="
+        background: #fff;
+        border-radius: 12px;
+        overflow: auto;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      "
+    >
+      <!-- Barra de acciones masivas (Gmail style) -->
+      <div class="bulk-bar" *ngIf="selectedCount() > 0">
+        <div class="left">
+          <mat-icon>check_circle</mat-icon>
+          <span>{{ selectedCount() }} seleccionados</span>
+        </div>
+
+        <div class="right">
+          <div class="bulk-actions">
+            <button
+              mat-flat-button
+              class="btn-primary"
+              [disabled]="bulkLoading()"
+              (click)="bulkRecover()"
+            >
+              <mat-icon>restore</mat-icon>
+              Recuperar
+            </button>
+
+            <button
+              mat-stroked-button
+              class="btn-danger"
+              [disabled]="bulkLoading()"
+              (click)="bulkDeletePermanent()"
+            >
+              <mat-icon>delete</mat-icon>
+              Eliminar
+            </button>
+
+            <button
+              mat-button
+              class="btn-ghost"
+              [disabled]="bulkLoading()"
+              (click)="clearSelection()"
+            >
+              Cancelar
+            </button>
+          </div>
+
+          <mat-progress-spinner
+            *ngIf="bulkLoading()"
+            mode="indeterminate"
+            diameter="18"
+          ></mat-progress-spinner>
+        </div>
+      </div>
+
+      <div
+        *ngIf="rows().length === 0 && !loading()"
+        style="padding: 20px; text-align: center; color: #444"
+      >
+        No se han eliminado registros recientemente
+      </div>
+      <app-tables
+        *ngIf="rows().length > 0"
+        [value]="rows()"
+        [rows]="pageSize()"
+        [first]="page() * pageSize()"
+        [totalRecords]="totalRecords()"
+        [excludeColumns]="['habilitado']"
+        (pageChange)="pageChanged($event)"
+        [selectable]="true"
+        [selectedIds]="selectedIds()"
+        (selectedIdsChange)="selectedIds.set($event)"
+        [showBulkBar]="false"
+      ></app-tables>
+
+      <ng-template #actionsTpl let-row>
+        <button mat-icon-button color="primary" matTooltip="Recuperar" (click)="recover(row)">
+          <mat-icon>restore</mat-icon>
+        </button>
+        <button
+          mat-icon-button
+          color="warn"
+          matTooltip="Eliminar definitivamente"
+          (click)="deletePermanent(row)"
+        >
+          <mat-icon>delete_forever</mat-icon>
+        </button>
+      </ng-template>
+    </div>
+  </ng-template>
+
+  <ng-template #errTmpl>
+    <div style="padding: 16px; color: #c62828; background: #ffebee; border-radius: 8px">
+      {{ error() }}
+    </div>
+  </ng-template>
+</div>

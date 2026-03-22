@@ -1,0 +1,91 @@
+<!-- Loading indicator -->
+@if (loading) {
+<div class="loading-placeholder">
+  <p>Cargando gráficas...</p>
+</div>
+} @else {
+<!-- Charts Section -->
+<div class="charts-section">
+
+  <!-- Tendencia Anual (Line + Bar) -->
+  <div class="chart-card full-width">
+    <div class="chart-header">
+      <h3>Tendencia Anual</h3>
+      <p>Evolución de casos, defunciones y tasa de incidencia por año</p>
+    </div>
+    <div class="chart-container">
+      <div echarts [options]="tendenciaOpts" class="echart" (chartInit)="onChartInit('tendencia', $event)"></div>
+    </div>
+  </div>
+
+  <!-- Distribución por Edad (Horizontal Bar) -->
+  <div class="chart-card">
+    <div class="chart-header">
+      <h3>Distribución por Edad</h3>
+      <p>Casos y defunciones por rango de edad</p>
+    </div>
+    <div class="chart-container">
+      <div echarts [options]="edadesOpts" class="echart" (chartInit)="onChartInit('edades', $event)"></div>
+    </div>
+  </div>
+
+  <!-- Subgrupos de Enfermedad (Pie) -->
+  <div class="chart-card">
+    <div class="chart-header">
+      <h3>Subgrupos de Enfermedad</h3>
+      <p>Distribución porcentual por código CIE-10</p>
+    </div>
+    <div class="chart-container">
+      <div echarts [options]="subgruposOpts" class="echart" (chartInit)="onChartInit('subgrupos', $event)"></div>
+    </div>
+  </div>
+
+  <!-- Instituciones (Bar) -->
+  <div class="chart-card">
+    <div class="chart-header">
+      <h3>Casos por Institución</h3>
+      <p>Total de egresos hospitalarios por institución de salud</p>
+    </div>
+    <div class="chart-container">
+      <div echarts [options]="institucionesOpts" class="echart" (chartInit)="onChartInit('instituciones', $event)"></div>
+    </div>
+  </div>
+
+  <!-- Estratos (Strip / Stacked Bar) -->
+  <div class="chart-card">
+    <div class="chart-header">
+      <h3>Distribución por Estrato</h3>
+      <p>Casos y defunciones según estrato de la unidad médica</p>
+    </div>
+    <div class="chart-container">
+      <div echarts [options]="estratosOpts" class="echart" (chartInit)="onChartInit('estratos', $event)"></div>
+    </div>
+  </div>
+
+  <!-- Días de Estancia (Scatter) -->
+  <div class="chart-card">
+    <div class="chart-header">
+      <h3>Días de Estancia Promedio</h3>
+      <p>Permanencia hospitalaria por rango de edad</p>
+    </div>
+    <div class="chart-container">
+      <div echarts [options]="diasEstanciaOpts" class="echart" (chartInit)="onChartInit('diasEstancia', $event)"></div>
+    </div>
+  </div>
+
+  <!-- Mapa / Barras México (Toggle) -->
+  <div class="chart-card full-width">
+    <div class="chart-header">
+      <h3>Casos por Entidad Federativa</h3>
+      <div class="chart-header-actions">
+        <button class="toggle-btn" (click)="toggleMapView()">
+          {{ mapView === 'map' ? '📊 Ver Barras' : '🗺️ Ver Mapa' }}
+        </button>
+      </div>
+    </div>
+    <div class="chart-container chart-container-tall">
+      <div echarts [options]="mapaBarOpts" [merge]="mapaBarOpts" class="echart echart-tall" (chartInit)="onChartInit('mapaBar', $event)"></div>
+    </div>
+  </div>
+</div>
+}

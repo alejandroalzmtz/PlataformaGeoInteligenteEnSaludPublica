@@ -1,0 +1,68 @@
+<div class="date-input-wrapper">
+  <label class="date-label" *ngIf="label">
+    {{ label }}
+    <span class="required" *ngIf="showRequired">*</span>
+  </label>
+  <div class="date-inputs-container">
+    <input
+      #dayInput
+      type="number"
+      [ngModel]="day"
+      class="form-control date-part-input"
+      placeholder="DD"
+      min="1"
+      max="31"
+      (keydown)="onlyDigits($event)"
+      (paste)="onPaste($event)"
+      (input)="onDayInput($event)"
+      (blur)="onDayBlur($event)"
+      title="Día (1-31)"
+    />
+    <span class="date-separator">/</span>
+    <input
+      #monthInput
+      type="number"
+      [ngModel]="month"
+      class="form-control date-part-input"
+      placeholder="MM"
+      min="1"
+      max="12"
+      (keydown)="onlyDigits($event)"
+      (paste)="onPaste($event)"
+      (input)="onMonthInput($event)"
+      (blur)="onMonthBlur($event)"
+      title="Mes (1-12)"
+    />
+    <span class="date-separator">/</span>
+    <input
+      #yearInput
+      type="number"
+      [ngModel]="year"
+      class="form-control date-part-input date-year-input"
+      placeholder="AAAA"
+      min="1900"
+      max="9999"
+      (keydown)="onlyDigits($event)"
+      (paste)="onPaste($event)"
+      (input)="onYearInput($event)"
+      (blur)="onYearBlur($event)"
+      title="Año (1900-9999)"
+    />
+    <button
+      type="button"
+      class="calendar-btn"
+      (click)="openCalendar()"
+      title="Seleccionar fecha">
+      <i class="fas fa-calendar-alt"></i>
+    </button>
+    <input
+      #calendarInput
+      type="date"
+      class="hidden-date-input"
+      [min]="minCalendarDate"
+      [max]="maxCalendarDate"
+      (change)="onCalendarChange($event)"
+    />
+  </div>
+  <span class="error-message" *ngIf="errorMessage">{{ errorMessage }}</span>
+</div>

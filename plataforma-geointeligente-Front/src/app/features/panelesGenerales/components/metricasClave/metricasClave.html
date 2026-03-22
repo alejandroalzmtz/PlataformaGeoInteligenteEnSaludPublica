@@ -1,0 +1,41 @@
+@if (indicadores) {
+<div class="metricas-panel">
+  <h3>Indicadores Epidemiológicos</h3>
+  <div class="metricas-grid">
+    <div class="metric-card">
+      <div class="metric-icon casos"></div>
+      <div class="metric-label">Total Casos</div>
+      <div class="metric-value">{{ indicadores.totalCasos | number:'1.0-0' }}</div>
+      <small class="metric-unit">registros</small>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-icon defunciones"></div>
+      <div class="metric-label">Defunciones</div>
+      <div class="metric-value">{{ indicadores.totalDefunciones | number:'1.0-0' }}</div>
+      <small class="metric-unit">registros</small>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-icon poblacion"></div>
+      <div class="metric-label">Población Base</div>
+      <div class="metric-value">{{ indicadores.poblacionBase | number:'1.0-0' }}</div>
+      <small class="metric-unit">habitantes</small>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-icon incidencia"></div>
+      <div class="metric-label">Tasa Incidencia</div>
+      <div class="metric-value">{{ (indicadores.tasaIncidencia ?? 0) | number:'1.2-2' }}</div>
+      <small class="metric-unit">por 100,000 hab</small>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-icon mortalidad"></div>
+      <div class="metric-label">Tasa Mortalidad</div>
+      <div class="metric-value">{{ (indicadores.tasaMortalidad ?? 0) | number:'1.2-2' }}</div>
+      <small class="metric-unit">por 100,000 hab</small>
+    </div>
+  </div>
+</div>
+}

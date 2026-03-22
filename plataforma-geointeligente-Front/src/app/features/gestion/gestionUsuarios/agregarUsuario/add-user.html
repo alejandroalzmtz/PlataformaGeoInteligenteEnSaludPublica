@@ -1,0 +1,57 @@
+<div class="add-user-form">
+  <h3>{{ userToEdit ? 'Editar Usuario' : 'Agregar Usuario' }}</h3>
+
+  <div class="form-group">
+    <label>Nombre de Usuario</label>
+    <input type="text" placeholder="Ejemplo:Alejandro-SSY9" [(ngModel)]="newUser.nombreUsuario"
+      (ngModelChange)="onUsernameChange()" [maxlength]="USER_MAX" />
+
+    <div class="error" *ngIf="usernameInvalid">
+      Usuario inválido. Use 4–20 caracteres: letras, números, ".", "-" o "_"
+    </div>
+
+    <small>
+      4–20 caracteres · Letras, números, ".", "-" y "_"
+    </small>
+    <small class="password-hint">
+      Ejemplo válido: <b>Admin@1234</b>
+    </small>
+
+  </div>
+
+  <div class="form-group">
+    <label>Contraseña</label>
+    <input type="password" placeholder="Ejemplo:D0l-woPP9a{mq}" [(ngModel)]="newUser.contrasena"
+      (ngModelChange)="onPasswordChange()" [maxlength]="PASS_MAX" />
+
+    <div class="error" *ngIf="passwordTouched && passwordInvalid">
+      9–32 caracteres, 1 mayúscula, 1 número y 1 símbolo
+    </div>
+
+
+    <div class="error" *ngIf="passwordTouched && passwordInvalid">
+      La contraseña debe tener mínimo 9 caracteres, una mayúscula,
+      un número y un símbolo.
+    </div>
+
+    <small class="password-hint">
+      Mínimo 9 caracteres, 1 mayúscula, 1 número y 1 símbolo
+    </small>
+
+  </div>
+
+  <div class="form-group">
+    <label>Rol</label>
+    <select [(ngModel)]="newUser.idRol">
+      <option [value]="1">Administrador</option>
+      <option [value]="2">Usuario</option>
+    </select>
+  </div>
+
+  <div class="actions">
+    <button type="button" class="btn secondary" (click)="onCancel()">Cancelar</button>
+    <button type="button" class="btn primary" (click)="save()">Agregar</button>
+  </div>
+
+  <div class="error-message" *ngIf="error">{{ error }}</div>
+</div>

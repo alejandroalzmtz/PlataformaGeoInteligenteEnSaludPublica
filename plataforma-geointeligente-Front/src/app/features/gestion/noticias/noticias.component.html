@@ -1,0 +1,22 @@
+<div class="noticias-container">
+  <div class="content-area">
+    <h2>Gestión de Noticias</h2>
+    <p class="subtitle">Crea y administra las noticias del sistema</p>
+
+    <!-- Formulario de creación/edición -->
+    <app-formulario-noticia
+      [editingNoticia]="editingNoticia"
+      [isSaving]="isSaving"
+      (save)="onSave($event)"
+      (cancelEdit)="onCancelEdit()">
+    </app-formulario-noticia>
+
+    <!-- Tabla de noticias existentes -->
+    <app-tabla-noticias
+      [noticias]="noticias"
+      [deletingId]="deletingId"
+      (edit)="onEdit($event)"
+      (delete)="onDelete($event)">
+    </app-tabla-noticias>
+  </div>
+</div>

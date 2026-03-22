@@ -1,0 +1,140 @@
+<div class="page">
+  <h1 class="title">Gestión de Base de Datos</h1>
+
+  <div
+    style="
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    "
+  >
+    <div style="display: flex; align-items: center; gap: 12px">
+      <button class="btn-add-user" (click)="openAddRegistro()" *ngIf="isAdmin">
+        + Nuevo registro
+      </button>
+
+      <button class="btn-export" (click)="exportCSV()">Exportar CSV</button>
+      <button class="btn-export" (click)="exportPDF()">Exportar PDF</button>
+      <button class="btn-export" (click)="exportJSON()">Exportar JSON</button>
+
+      <!-- 'Mostrando' moved to filters area so it appears above paginator -->
+    </div>
+  </div>
+
+  <!-- Reemplaza la sección .filters por esta -->
+  <div
+    class="filters"
+    style="align-items: center; margin-bottom: 12px; justify-content: space-between"
+  >
+    <div class="search-input" style="flex: 1; max-width: 680px">
+      <mat-form-field appearance="outline" style="width: 100%">
+        <input
+          matInput
+          placeholder="Buscar"
+          name="search-registros"
+          autocomplete="off"
+          [value]="q()"
+          (input)="onSearchInput($any($event.target).value)"
+        />
+      </mat-form-field>
+    </div>
+
+    <div
+      class="paginator-wrap"
+      style="display: flex; align-items: center; gap: 12px; margin-left: 12px"
+    >
+      <div class="paginator-column">
+        <div class="showing-report" style="opacity: 0.75; margin-bottom: 6px; text-align: right">
+          Mostrando {{ rows().length }} de {{ totalRecords() }} (página {{ page }} — tamaño
+          {{ pageSize }})
+        </div>
+        <div class="paginator-row" style="display: flex; align-items: center; gap: 8px">
+          <p-paginator
+            (onPageChange)="pageChanged($event)"
+            [first]="(page - 1) * pageSize"
+            [rows]="pageSize"
+            [totalRecords]="totalRecords()"
+          ></p-paginator>
+          <div class="rpp-wrapper">
+            <select
+              class="native-select"
+              [(ngModel)]="pageSize"
+              (ngModelChange)="page = 1; loadPage()"
+            >
+              <option *ngFor="let o of [10, 30, 100]" [value]="o">{{ o }}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    *ngIf="loading(); else tableTmpl"
+    style="display: flex; justify-content: center; padding: 32px"
+  >
+    <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+  </div>
+
+  <ng-template #tableTmpl>
+    <div
+      *ngIf="!error(); else errTmpl"
+      class="table-wrap"
+      style="
+        background: #fff;
+        border-radius: 12px;
+        overflow: auto;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      "
+    >
+      <!-- Bulk bar moved to shared Tables component -->
+
+      <!-- Uso del componente compartido app-tables -->
+      <app-tables
+        [value]="rows()"
+        [rows]="pageSize"
+        [first]="(page - 1) * pageSize"
+        [totalRecords]="totalRecords()"
+        [rowsPerPageOptions]="[10, 30, 100]"
+        [excludeColumns]="[
+          'FechaEliminacion',
+          'FechaEliminación',
+          'fechadeeliminacion',
+          'habilitado',
+        ]"
+        (pageChange)="pageChanged($event)"
+        [selectable]="true"
+        [selectedIds]="selectedIds()"
+        (selectedIdsChange)="selectedIds.set($event)"
+        [bulkLoading]="bulkLoading()"
+        (bulkDeleteRequest)="bulkDelete()"
+        (clearSelectionRequest)="clearSelection()"
+        [actionsTemplate]="actionsTpl"
+        [actionsLabel]="'Editar'"
+      >
+      </app-tables>
+
+      <ng-template #actionsTpl let-row>
+        <button mat-icon-button color="primary" matTooltip="Editar" (click)="openEditRegistro(row)">
+          <mat-icon>edit</mat-icon>
+        </button>
+      </ng-template>
+
+      <!-- Tabla Material original (comentada) - conservar por referencia
+      <table mat-table [dataSource]="rows()" class="mat-elevation-z1" style="width:100%;min-width:1200px">
+        ... (tabla original aquí) ...
+      </table>
+      -->
+    </div>
+  </ng-template>
+
+  <!-- paginador removido (ya está arriba) -->
+
+  <ng-template #errTmpl>
+    <div style="padding: 16px; color: #c62828; background: #ffebee; border-radius: 8px">
+      {{ error() }}
+    </div>
+  </ng-template>
+</div>

@@ -1,0 +1,6 @@
+@SaludPublicaBackend_HostAddress = http://localhost:5185
+
+GET {{SaludPublicaBackend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

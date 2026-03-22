@@ -1,0 +1,55 @@
+<div class="user-management-container">
+  <div class="content-area">
+      <!-- notification-wrap removed: using AlarmService to show notifications -->
+    <h2>Gestión de Usuarios</h2>
+    <p>Administra todos los usuarios del sistema y monitorea su actividad</p>
+<div class="content-section">
+  <!-- Controles: agregar/exportar (buscador y filtro removidos) -->
+  <div class="filters-section">
+    <div class="filter-controls">
+      <button class="btn-add-user" (click)="openAddUser()">+ Agregar Usuario</button>
+      <button class="btn-export" (click)="exportCSV()">Exportar CSV</button>
+      <button class="btn-export" (click)="exportPDF()">Exportar PDF</button>
+      <button class="btn-export" (click)="exportJSON()">Exportar JSON</button>
+    </div>
+  </div>
+
+  <!-- Tabla de usuarios -->
+  <div class="users-table-container">
+    <!-- Use centralized Tables component for consistent table styling/behavior -->
+    <ng-template #rowActions let-row>
+      <div style="display:flex;gap:8px;justify-content:flex-end;align-items:center;white-space:nowrap">
+        <button class="btn-activity" (click)="viewUserActivity(row.idUsuario)">Actividad</button>
+        <button class="icon-btn btn-edit" (click)="editUser(row.__raw)"><mat-icon>edit</mat-icon></button>
+        <button  *ngIf="!isCurrentUser(row.__raw)" class="icon-btn btn-delete" (click)="deactivateUser(row.__raw)"><mat-icon>delete</mat-icon></button>
+      </div>
+    </ng-template>
+
+    <app-tables [value]="tableData" [rows]="10" [totalRecords]="tableData.length" [actionsTemplate]="rowActions" [excludeColumns]="['__raw']"></app-tables>
+  </div>
+
+  <!-- Overlay Modal Agregar Usuario -->
+  <div class="add-user-overlay" *ngIf="showAddUser">
+    <div class="backdrop" (click)="onCancelAddUser()"></div>
+    <app-add-user
+      [userToEdit]="selectedUser"
+      (cancel)="onCancelAddUser()"
+      (saveUser)="onSaveUser($event)">
+    </app-add-user>
+  </div>
+
+  <!-- Modal de Actividad -->
+  <app-actividad
+    *ngIf="showActivityModal && selectedUser?.idUsuario != null"
+    [userId]="selectedUser?.idUsuario"
+    [visible]="showActivityModal"
+    (close)="closeActivityModal()">
+  </app-actividad>
+</div>
+
+  </div>
+
+  <!-- Toast emergente (fuera de content-area para que esté siempre visible) -->
+
+  
+</div>

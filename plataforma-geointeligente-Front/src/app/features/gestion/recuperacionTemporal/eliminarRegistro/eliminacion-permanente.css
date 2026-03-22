@@ -1,0 +1,47 @@
+.modal-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 480px;
+  gap: 20px;
+  text-align: center;
+}
+.actions {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;  /* <-- botones a la derecha */
+  gap: 16px;
+  margin-top: 10px;
+  padding-right: 10px; /* <-- pequeño margen del borde derecho */
+}
+
+
+.modal-container h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #d32f2f;
+}
+
+.modal-container .text {
+  font-size: 1.1rem;
+  line-height: 1.45;
+  margin: 0;
+  padding: 0 10px;
+  color: #333;
+}
+
+.actions {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 10px;
+}
+
+.actions button {
+  min-width: 110px;
+  font-size: 1rem;
+}

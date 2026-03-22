@@ -1,0 +1,121 @@
+<header class="header">
+  <!-- AUTENTICADO -->
+  <div class="header-content" *ngIf="isAuthenticated()">
+    <!-- Logo -->
+    <div class="logo-container">
+      <img src="/images/logo.png" alt="LaGif Logo" class="logo-img" />
+    </div>
+
+    <!-- Menú Desktop (MegaMenu) -->
+    <div class="card menu-desktop">
+      <p-megamenu [model]="items" [style]="{ 'border-radius': '3rem', display: 'flex' }" class="p-4 bg-surface-0 dark:bg-surface-900">
+        <ng-template #item let-item>
+          <a *ngIf="item.root" pRipple class="menu-item-root">
+            <i *ngIf="item.icon" [ngClass]="item.icon"></i>
+            <span>{{ item.label }}</span>
+          </a>
+          <a *ngIf="!item.root && !item.image" class="menu-item-submenu">
+            <i *ngIf="item.icon" [ngClass]="item.icon"></i>
+            <span class="menu-item-content">
+              <span class="menu-item-label">{{ item.label }}</span>
+              <span class="menu-item-subtext">{{ item.subtext }}</span>
+            </span>
+          </a>
+          <div *ngIf="item.image" class="flex flex-col items-start gap-4">
+            <img [src]="item.image" alt="megamenu-demo" class="w-full" />
+            <span>{{ item.subtext }}</span>
+            <p-button [label]="item.label" [outlined]="true"></p-button>
+          </div>
+        </ng-template>
+        <ng-template #end>
+          <div class="user-menu">
+            <p-avatar [label]="getCurrentUserName().charAt(0).toUpperCase()" shape="circle" />
+            <div class="user-info ml-3">
+              <span class="user-name">{{ getCurrentUserName() }}</span>
+              <span class="user-role">({{ getCurrentUserRole() }})</span>
+            </div>
+            <button (click)="logout()" class="logout-btn" pRipple>
+              <i class="pi pi-sign-out"></i>
+            </button>
+          </div>
+        </ng-template>
+      </p-megamenu>
+    </div>
+
+    <!-- Hamburger Menu Mobile -->
+    <button class="hamburger-btn" (click)="toggleMobileMenu()" [class.active]="mobileMenuOpen">
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+    </button>
+  </div>
+
+  <!-- Menú Mobile -->
+  <div class="mobile-menu" *ngIf="isAuthenticated() && mobileMenuOpen" [@slideDown]>
+    <div class="mobile-menu-content">
+      <div class="mobile-menu-items">
+        <!-- Items del menú móvil -->
+        <ng-container *ngFor="let item of items">
+          <!-- Item principal - Gestión con toggle -->
+          <ng-container *ngIf="item.label === 'Gestión'">
+            <button class="mobile-menu-item gestion-item" (click)="toggleGestionExpand($event)">
+              <i *ngIf="item.icon" [ngClass]="item.icon"></i>
+              <span>{{ item.label }}</span>
+              <i class="pi" [ngClass]="expandedGestion ? 'pi-chevron-up' : 'pi-chevron-down'" style="margin-left: auto;"></i>
+            </button>
+            
+            <!-- Subitems de Gestión (expandibles) -->
+            <div class="mobile-menu-subitem-group" *ngIf="expandedGestion && item.items && (item.items | keyvalue)">
+              <ng-container *ngFor="let subItemRow of (item.items || [])">
+                <ng-container *ngIf="subItemRow[0] && subItemRow[0]['items']">
+                  <button *ngFor="let subItem of subItemRow[0]['items']" class="mobile-menu-subitem" (click)="handleMobileMenuSubitem(subItem)">
+                    <i *ngIf="subItem.icon" [ngClass]="subItem.icon"></i>
+                    <span>{{ subItem.label }}</span>
+                  </button>
+                </ng-container>
+              </ng-container>
+            </div>
+          </ng-container>
+          
+          <!-- Otros items que no son Gestión -->
+          <ng-container *ngIf="item.label !== 'Gestión'">
+            <button class="mobile-menu-item" (click)="handleMobileMenuClick(item)">
+              <i *ngIf="item.icon" [ngClass]="item.icon"></i>
+              <span>{{ item.label }}</span>
+            </button>
+          </ng-container>
+        </ng-container>
+      </div>
+
+      <!-- User Info en Mobile -->
+      <div class="mobile-user-section">
+        <div class="mobile-user-info">
+          <p-avatar [label]="getCurrentUserName().charAt(0).toUpperCase()" shape="circle" />
+          <div class="ml-2">
+            <div class="user-name">{{ getCurrentUserName() }}</div>
+            <div class="user-role">{{ getCurrentUserRole() }}</div>
+          </div>
+        </div>
+        <button (click)="logout()" class="logout-btn-mobile">
+          <i class="pi pi-sign-out"></i>
+          Cerrar sesión
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Si NO está autenticado -->
+  <div *ngIf="!isAuthenticated()" class="header-content">
+    <div class="logo-section">
+      <div class="logo">
+        <img src="/images/logo.png" alt="LaGif Logo" class="logo-img" />
+      </div>
+    </div>
+
+    <a routerLink="/vista-publica" class="nav-public-title">Laboratorio Nacional de Geoprocesamiento de información Fitosanitaria</a>
+
+    <div class="login-button">
+      <a routerLink="/login" class="login-link">Iniciar sesión</a>
+    </div>
+  </div>
+</header>

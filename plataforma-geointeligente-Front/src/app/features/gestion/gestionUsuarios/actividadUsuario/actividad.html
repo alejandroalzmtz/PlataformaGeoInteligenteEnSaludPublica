@@ -1,0 +1,29 @@
+<div class="activity-modal" [class.show]="visible">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Actividad del Usuario - {{userId}}</h3>
+      <button class="close-btn" (click)="closeModal()">×</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="activity-table-container">
+        <table class="activity-table">
+          <thead>
+            <tr>
+              <th>Fecha Actividad</th>
+              <th>Hora</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let a of actividades">
+              <td>{{a.fechaActividad}}</td>
+              <td>{{a.hora}}</td>
+              <td>{{a.descripcionAccion}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

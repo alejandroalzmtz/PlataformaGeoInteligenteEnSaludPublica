@@ -1,0 +1,100 @@
+<div *ngIf="showBulkBar && selectedCount > 0" class="bulk-bar">
+  <div class="left">
+    <mat-icon>check_circle</mat-icon>
+    <span>{{ selectedCount }} seleccionados</span>
+  </div>
+
+  <div class="right">
+    <div class="bulk-actions">
+      <button
+        mat-flat-button
+        class="btn-danger"
+        (click)="onBulkDeleteClick()"
+        [disabled]="bulkLoading"
+      >
+        <mat-icon>delete</mat-icon>
+        Eliminar
+      </button>
+
+      <button
+        mat-button
+        class="btn-ghost"
+        (click)="onClearSelectionClick()"
+        [disabled]="bulkLoading"
+      >
+        Cancelar
+      </button>
+    </div>
+
+    <mat-progress-spinner
+      *ngIf="bulkLoading"
+      mode="indeterminate"
+      diameter="18"
+    ></mat-progress-spinner>
+  </div>
+</div>
+
+<p-table
+  [value]="value"
+  [tableStyle]="{ 'min-width': '50rem' }"
+  class="global-table"
+  [paginator]="true"
+  [lazy]="true"
+  [rows]="rows"
+  [first]="first"
+  [totalRecords]="totalRecords"
+  [rowsPerPageOptions]="rowsPerPageOptions"
+  (onPage)="onPageChange($event)"
+>
+  <ng-template pTemplate="header">
+    <tr>
+      <th
+        *ngIf="selectable"
+        style="width: 44px; text-align: center"
+        title="Seleccionar registros para recuperar o eliminar"
+      >
+        <input
+          type="checkbox"
+          [checked]="isAllSelectedOnPage()"
+          [indeterminate]="isSomeSelectedOnPage()"
+          (click)="onHeaderCheckboxClick($event)"
+          (change)="toggleAllOnPage(getChecked($event))"
+        />
+      </th>
+
+      <th *ngIf="actionsTemplate" style="width: 64px; text-align: center">
+        {{ actionsLabel }}
+      </th>
+
+      <th *ngFor="let k of visibleKeys">{{ (columnLabels && columnLabels[k]) ? columnLabels[k] : (k | titlecase) }}</th>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="body" let-row>
+    <tr
+      [class.selected-row]="selectable && isRowSelected(row)"
+      (click)="handleRowClick(row, $event)"
+      style="cursor: pointer"
+    >
+      <td *ngIf="selectable" style="text-align: center">
+        <input
+          type="checkbox"
+          [checked]="isRowSelected(row)"
+          (click)="onRowCheckboxClick($event, row)"
+          (change)="toggleRow(row, getChecked($event))"
+          title="Seleccionar"
+        />
+      </td>
+
+      <td *ngIf="actionsTemplate" style="text-align: center; white-space: nowrap">
+        <div (click)="onActionCellClick($event, row)">
+          <ng-container
+            *ngTemplateOutlet="actionsTemplate; context: { $implicit: row }"
+          ></ng-container>
+        </div>
+      </td>
+
+      <td *ngFor="let k of visibleKeys">{{ formatCell(row[k]) }}</td>
+    </tr>
+  </ng-template>
+</p-table>

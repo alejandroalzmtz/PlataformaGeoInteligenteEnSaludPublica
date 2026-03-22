@@ -1,0 +1,76 @@
+<div class="table-card">
+  <!-- Toolbar -->
+  <div class="table-toolbar">
+    <div class="spacer"></div>
+    <input
+      type="text"
+      placeholder="Buscar (estado, municipio, CIE-10, institución)"
+      [(ngModel)]="search"
+    />
+  </div>
+
+  <div class="table-info">Mostrando {{ mostrando }} de {{ totalRegistros }} ({{ pageSize }} por página)</div>
+
+  <!-- Tabla -->
+  @if (!loading) {
+  <div class="table-scroll">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Fecha Ingreso</th>
+          <th>Año</th>
+          <th>Días Estancia</th>
+          <th>Estado</th>
+          <th>Municipio</th>
+          <th>Edad</th>
+          <th>Sexo</th>
+          <th>Grupo</th>
+          <th>CIE-10</th>
+          <th>Institución</th>
+          <th>Estrato</th>
+          <th>Motivo Egreso</th>
+          <th>Defunción</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (r of filtrados; track r.idRegistro) {
+        <tr>
+          <td>{{ r.idRegistro }}</td>
+          <td>{{ r.fechaIngreso | date:'yyyy-MM-dd' }}</td>
+          <td>{{ r.anio }}</td>
+          <td>{{ r.diasEstancia }}</td>
+          <td>{{ r.nombreEstado }}</td>
+          <td>{{ r.nombreMunicipio }}</td>
+          <td>{{ r.edad }}</td>
+          <td>{{ r.sexo }}</td>
+          <td>{{ r.codigoGrupo }}</td>
+          <td>{{ r.codigoICD }}</td>
+          <td>{{ r.nombreInstitucion }}</td>
+          <td>{{ r.estratoUnidad }}</td>
+          <td>{{ r.idMotivoEgreso }}</td>
+          <td>
+            <span [class.defuncion]="r.esDefuncion === 1">
+              {{ r.esDefuncion === 1 ? 'Sí' : 'No' }}
+            </span>
+          </td>
+        </tr>
+        } @empty {
+        <tr>
+          <td colspan="14" style="text-align: center; padding: 18px; color: #7b8191">Sin datos</td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  } @else {
+  <div style="padding: 32px; text-align: center; color: #6b7280">Cargando…</div>
+  }
+
+  <!-- Paginación -->
+  <div class="pager">
+    <button (click)="prev()" [disabled]="page <= 1">Anterior</button>
+    <span>Página {{ page }} de {{ maxPages }}</span>
+    <button (click)="next()" [disabled]="page >= maxPages">Siguiente</button>
+  </div>
+</div>

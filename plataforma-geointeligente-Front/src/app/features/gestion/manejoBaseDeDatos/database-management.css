@@ -1,0 +1,149 @@
+/* Layout */
+.page {
+  background: #ffffff;
+  min-height: 100%;
+  padding: 24px;
+}
+.title {
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0 0 16px;
+  /* removed text-shadow for a flatter look */
+}
+.search-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.search-input {
+  flex: 1;
+}
+.search-input mat-form-field {
+  width: 100%;
+}
+.filters {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  margin: 8px 0 16px;
+}
+.table-wrap {
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Botones con estilo de user-management */
+.btn-add-user {
+  background: #0a4da6;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-add-user:hover {
+  background: #083a7f;
+}
+
+.btn-export {
+  background: #0a4da6;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-export:hover {
+  background: #083a7f;
+}
+
+table {
+  width: 100%;
+}
+th.mat-header-cell {
+  background: #0a4da6;
+  color: #fff;
+  font-weight: 600;
+}
+
+/* Acciones */
+.actions-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom:  16px;
+}
+
+/* Contenedor del paginador al lado de la búsqueda */
+.paginator-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Ajustes para que el mat-paginator no se rompa en pantallas pequeñas */
+.paginator-wrap .mat-paginator {
+  min-width: 220px;
+}
+
+/* Barra masiva tipo Gmail */
+.bulk-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  margin: 10px 12px;
+  padding: 10px 12px;
+
+  background: #f4f6fb;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 12px;
+}
+
+.bulk-bar .left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.bulk-bar .right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.bulk-bar button {
+  border-radius: 999px;
+  height: 38px;
+  padding: 0 14px;
+}
+
+.bulk-bar mat-progress-spinner {
+  margin-left: 6px;
+}
+
+/* En pantallas pequeñas apilar elementos */
+@media (max-width: 920px) {
+  .filters {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .paginator-wrap {
+    justify-content: flex-start;
+    width: 100%;
+  }
+}

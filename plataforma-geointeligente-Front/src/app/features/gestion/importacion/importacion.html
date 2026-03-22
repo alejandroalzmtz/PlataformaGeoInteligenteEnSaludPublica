@@ -1,0 +1,118 @@
+<div class="importacion-container">
+  <!-- Toast used as upload progress modal -->
+  <p-toast position="top-center" key="confirm" (onClose)="onClose()" [baseZIndex]="5000">
+    <!-- Global toast for messages (success/warn/error) -->
+    <p-toast position="top-right" key="global" [baseZIndex]="5000"></p-toast>
+    <ng-template let-message #headless let-closeFn="closeFn">
+      <section class="flex flex-col p-4 gap-4 w-full bg-primary/70 rounded-xl">
+        <div class="flex items-center gap-5">
+          <i class="pi pi-cloud-upload text-white dark:text-black text-2xl"></i>
+          <span class="font-bold text-base text-white dark:text-black">{{ message.summary }}</span>
+        </div>
+        <div class="flex flex-col gap-2">
+          <p-progressbar [value]="progress" [showValue]="false" [style]="{ height: '4px' }" styleClass="!bg-primary/80"></p-progressbar>
+          <label class="text-sm font-bold text-white dark:text-black">{{ progress }}% uploaded</label>
+        </div>
+        <div class="flex gap-4 mb-4 justify-end">
+          <p-button label="Another Upload?" (click)="closeFn($event)" size="small"></p-button>
+          <p-button label="Cancel" (click)="closeFn($event)" size="small"></p-button>
+        </div>
+      </section>
+    </ng-template>
+  </p-toast>
+
+  <!-- Fallback modal (in-template) in case p-toast doesn't render due to environment/theme issues -->
+  <div class="progress-modal-overlay" *ngIf="showProgressModal">
+    <div class="progress-modal">
+      <div class="progress-header">
+        <i class="pi pi-cloud-upload modal-icon"></i>
+        <div class="progress-title">Uploading your files.</div>
+      </div>
+      <div class="progress-body">
+        <p-progressbar [value]="progress" [showValue]="false" [style]="{ height: '6px' }"></p-progressbar>
+        <div class="progress-label">{{ progress }}% uploaded</div>
+      </div>
+      <div class="progress-actions">
+        <button class="btn ghost" (click)="showProgressModal = false">Cancel</button>
+      </div>
+    </div>
+  </div>
+  <h2>Importar Registro Médico (CSV)</h2>
+
+  <div class="card">
+
+    <!-- CONTROLES DE SUBIDA: ahora arriba -->
+    <div class="form-row top-controls">
+      <label class="file-label">
+        <input class="file-input" type="file" accept=".csv,text/csv" (change)="onFileSelected($event)" />
+        <span class="file-placeholder">{{ selectedFile?.name || 'Selecciona archivo .csv' }}</span>
+      </label>
+
+      <div class="actions">
+        <p-button label="Previsualizar" icon="pi pi-eye" (click)="parsePreview()" [disabled]="!selectedFile || loading" styleClass="p-button-sm"></p-button>
+        <p-button (click)="upload()" [disabled]="!selectedFile || loading" [label]="loading ? 'Subiendo...' : 'Subir CSV'" icon="pi pi-upload" styleClass="p-button-success p-button-rounded upload-btn"></p-button>
+        <p-button label="Limpiar" icon="pi pi-times" (click)="clear()" [disabled]="loading && !selectedFile" styleClass="p-button-secondary p-button-sm"></p-button>
+      </div>
+    </div>
+
+    <div class="meta">
+      <div *ngIf="selectedFile">
+        <strong>Tamaño:</strong> {{ selectedFile.size | number }} bytes — {{ (selectedFile.size / 1024 / 1024) | number:'1.0-2' }} MB
+      </div>
+      <div *ngIf="recordEstimate !== null"><strong>Estimado filas:</strong> {{ recordEstimate | number }}</div>
+      <div class="warning" *ngIf="sizeWarning">{{ sizeWarning }}</div>
+      <div class="warning" *ngIf="recordWarning">{{ recordWarning }}</div>
+    </div>
+
+    <!-- NOTAS ABAJO -->
+    <div class="notes">
+      <h4>Qué puedes subir</h4>
+      <ul>
+        <li><strong>Extensión y tamaño:</strong> .csv, hasta ~1 GB por petición.</li>
+        <li><strong>Codificación:</strong> UTF-8. Primera fila con cabeceras. Delimitador coma (,).</li>
+        <li><strong>Citas:</strong> Si un valor contiene comas o saltos de línea, enciérralo entre comillas dobles; las comillas internas se escapan duplicándolas ("").</li>
+      </ul>
+
+      <h4>Columnas esperadas (limpieza)</h4>
+      <p>Requeridas por nombre (ignora mayúsculas/orden): Ingreso, Egreso, IdEntidad, IdMunicipio, ClaveLoc, Edad, IdSexo, IdDerechohab, IdServicioIngreso, IdServicioEgreso, IdProcedencia, IdMotivoEgreso, IdAfecPrincipal.</p>
+
+      <h4>Validaciones y limpieza</h4>
+      <ul>
+        <li>Fechas: deben ser parseables (yyyy-MM-dd, dd/MM/yyyy, ISO, etc.). Filas con fechas inválidas se omiten.</li>
+        <li>Números enteros: IdEntidad, IdMunicipio, ClaveLoc, Edad, IdSexo, IdDerechohab, IdServicioIngreso, IdServicioEgreso, IdProcedencia, IdMotivoEgreso.</li>
+        <li>Edad rango: 0–120. Valores inválidos hacen que la fila se omita; la mediana se usa para imputación de Edad si falta.</li>
+        <li>Imputación por defecto si faltan/invalidos: IdSexo=9, IdDerechohab=0, IdEntidad=99, IdMunicipio=0, ClaveLoc=999, IdServicioIngreso=501, IdServicioEgreso=501, IdProcedencia=9, IdMotivoEgreso=9.</li>
+        <li>Duplicados gestionados por IdEgreso.</li>
+      </ul>
+
+      <h4>Formato final esperado</h4>
+      <p>Cabeceras finales: fechaIngreso, fechaEgreso, idEstado, idMunicipio, idLoc, edad, idSexo, idDerechoHab, idServicioIngreso, idServicioEgreso, idProcedencia, idMotivoEgreso, idEnfermedad.</p>
+
+      <p class="note-small">Separador: coma. Orden de columnas no importa. Columnas extra se ignoran. Espacios se recortan.</p>
+    </div>
+
+    <div *ngIf="loading" class="status">Procesando archivo...</div>
+
+    <div *ngIf="previewHeaders.length" class="preview">
+      <h3>Previsualización (máx {{ previewMaxRows }} filas)</h3>
+      <div class="table-wrap">
+        <table class="preview-table">
+          <thead>
+            <tr>
+              <th *ngFor="let h of previewHeaders">{{ h }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of previewRows">
+              <td *ngFor="let cell of row">{{ cell }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="preview-meta">Columnas: {{ previewHeaders.length }} · Filas mostradas: {{ previewRows.length }} </div>
+    </div>
+
+    <!-- Result is shown via global alarms; inline result block removed -->
+  </div>
+</div>
+

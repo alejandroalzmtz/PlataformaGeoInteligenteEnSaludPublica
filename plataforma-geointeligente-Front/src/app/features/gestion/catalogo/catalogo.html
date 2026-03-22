@@ -1,0 +1,369 @@
+<section class="catalogo">
+	<h2>Catálogo — {{ activeTab === 0 ? 'Enfermedades' : (activeTab === 1 ? 'Servicios Médicos' : (activeTab === 2 ? 'Derecho Habiente' : (activeTab === 3 ? 'Estados' : (activeTab === 4 ? 'Motivos de Egreso' : (activeTab === 5 ? 'Rangos de Edad' : 'Procedencias'))))) }}</h2>
+
+	<div *ngIf="loading">Cargando...</div>
+	<div *ngIf="error" class="error">{{ error }}</div>
+
+	<section *ngIf="!loading && !error">
+			<ng-template #rowActions let-row>
+	 			<div style="display:flex;gap:8px;justify-content:center;width:100%">
+					<button type="button" class="edit-action icon-btn" aria-label="Editar" title="Editar" style="min-width:40px;min-height:40px;display:inline-flex;align-items:center;justify-content:center;border:none;background:transparent;cursor:pointer">
+						<mat-icon>edit</mat-icon>
+					</button>
+	 			</div>
+			</ng-template>
+
+		<ng-container *ngIf="__TablesRef" style="display:none"></ng-container>
+
+		<div class="tabs">
+			<div class="tablist" role="tablist">
+				<button type="button" class="tab" [class.active]="activeTab===0" (click)="activeTab=0" role="tab">Enfermedades</button>
+				<button type="button" class="tab" [class.active]="activeTab===1" (click)="activeTab=1" role="tab">Servicios Médicos</button>
+				<button type="button" class="tab" [class.active]="activeTab===2" (click)="activeTab=2" role="tab">Derecho Habiente</button>
+				<button type="button" class="tab" [class.active]="activeTab===3" (click)="activeTab=3" role="tab">Estados</button>
+				<button type="button" class="tab" [class.active]="activeTab===4" (click)="activeTab=4" role="tab">Motivos de Egreso</button>
+				<button type="button" class="tab" [class.active]="activeTab===5" (click)="activeTab=5" role="tab">Rangos de Edad</button>
+				<button type="button" class="tab" [class.active]="activeTab===6" (click)="activeTab=6" role="tab">Procedencias</button>
+			</div>
+
+			<div class="tabpanel" *ngIf="activeTab===0" role="tabpanel">
+				<div class="table-toolbar">
+					<input maxlength="30" aria-label="Buscar Enfermedades" class="search-input" type="text" placeholder="Buscar Enfermedades... (máx 30 caracteres)" [ngModel]="searchEnfermedad" (ngModelChange)="onEnfermedadInput($event)" />
+					<button type="button" class="btn-add" (click)="onAddClick()">+ Añadir {{ addLabel() }}</button>
+				</div>
+				<app-tables
+					[value]="tableData"
+					[rows]="pageSize"
+					[first]="(pageNumber-1)*pageSize"
+					[excludeColumns]="['__raw','idEnfermedad']"
+					[columnLabels]="{ 'codigoICD': 'Código ICD', 'nombreEnfermedad': 'Nombre de Enfermedad' }"
+					[totalRecords]="totalCount"
+					[rowIdKey]="'idEnfermedad'"
+					[actionsTemplate]="rowActions"
+					(actionClick)="onRowActionEdit($event)"
+					[actionsLabel]="'Editar'"
+					(executePageChange)="onTablePage($event)"
+					(pageChange)="onTablePage($event)"
+					[selectable]="true"
+					[selectedIds]="selectedIds()"
+					(selectedIdsChange)="selectedIds.set($event)"
+					[bulkLoading]="bulkLoading()"
+					(bulkDeleteRequest)="bulkDelete()"
+					(clearSelectionRequest)="clearSelection()"
+				></app-tables>
+			</div>
+
+			<div class="tabpanel" *ngIf="activeTab===1" role="tabpanel">
+				<div class="table-toolbar">
+					<input maxlength="30" aria-label="Buscar Servicios" class="search-input" type="text" placeholder="Buscar Servicios... (máx 30 caracteres)" [ngModel]="searchServicios" (ngModelChange)="onServiciosInput($event)" />
+					<button type="button" class="btn-add" (click)="onAddClick()">+ Añadir {{ addLabel() }}</button>
+				</div>
+				<app-tables
+					[value]="serviciosTableData"
+					[rows]="10"
+					[excludeColumns]="['__raw','descripcion','idServicio']"
+					[columnLabels]="{ 'nombreServicio': 'Nombre del Servicio Médico' }"
+					[totalRecords]="serviciosFiltered.length"
+					[rowIdKey]="'idServicio'"
+					[actionsTemplate]="rowActions"
+					(actionClick)="onRowActionEdit($event)"
+								[selectable]="true"
+								[selectedIds]="selectedIds()"
+								(selectedIdsChange)="selectedIds.set($event)"
+					[bulkLoading]="bulkLoading()"
+					(bulkDeleteRequest)="bulkDelete()"
+					(clearSelectionRequest)="clearSelection()"
+				></app-tables>
+			</div>
+
+			<div class="tabpanel" *ngIf="activeTab===2" role="tabpanel">
+				<div class="table-toolbar">
+					<input maxlength="30" aria-label="Buscar Derecho Habiente" class="search-input" type="text" placeholder="Buscar Derecho Habiente... (máx 30 caracteres)" [ngModel]="searchDerechos" (ngModelChange)="onDerechosInput($event)" />
+					<button type="button" class="btn-add" (click)="onAddClick()">+ Añadir {{ addLabel() }}</button>
+				</div>
+				<app-tables
+					[value]="derechosTableData"
+					[rows]="derechosPageSize"
+					[first]="(derechosPageNumber-1)*derechosPageSize"
+					[excludeColumns]="['__raw','idDerechoHab']"
+					[totalRecords]="derechosTotalCount"
+					[rowIdKey]="'idDerechoHab'"
+					[actionsTemplate]="rowActions"
+					(actionClick)="onRowActionEdit($event)"
+					(executePageChange)="onTablePage($event)"
+					(pageChange)="onTablePage($event)"
+						[selectable]="true"
+						[selectedIds]="selectedIds()"
+						(selectedIdsChange)="selectedIds.set($event)"
+					[bulkLoading]="bulkLoading()"
+					(bulkDeleteRequest)="bulkDelete()"
+					(clearSelectionRequest)="clearSelection()"
+				></app-tables>
+				<div *ngIf="derechos.length === 0" style="margin-top:12px;color:#666">
+					No hay datos de Derecho Habiente (debug):
+					<pre style="max-height:200px;overflow:auto;background:#fafafa;padding:8px;border:1px solid #eee">{{ derechos | json }}</pre>
+				</div>
+			</div>
+
+			<div class="tabpanel" *ngIf="activeTab===3" role="tabpanel">
+					<div class="table-toolbar states-toolbar">
+						<div class="states-left">
+							<input maxlength="30" aria-label="Buscar Estados" class="search-input" type="text" placeholder="Buscar Estados... (máx 30 caracteres)" [ngModel]="searchEstados" (ngModelChange)="onEstadosInput($event)" />
+							<div *ngIf="!selectedEstado" class="catalogo-hint-mini states-hint">Selecciona un estado para ver municipios y población</div>
+						</div>
+						<div class="states-right">
+							<button type="button" class="btn-add" (click)="onAddClick()">+ Añadir Estado</button>
+							<button type="button" class="btn-add" (click)="onAddMunicipio()">+ Añadir Municipio</button>
+							<button type="button" class="btn-add" (click)="onAddLocalidad()">+ Añadir Localidad</button>
+						</div>
+					</div>
+				<app-tables
+					[value]="estadosTableData"
+					[rows]="estadosPageSize"
+					[first]="(estadosPageNumber-1)*estadosPageSize"
+					[excludeColumns]="['__raw','idEstado']"
+					[totalRecords]="estadosTotalCount"
+					[rowIdKey]="'idEstado'"
+					(pageChange)="onTablePage($event)"
+					(executePageChange)="onTablePage($event)"
+					(rowClick)="onEstadoClick($event)"
+					[actionsTemplate]="rowActions"
+					(actionClick)="onRowActionEdit($event)"
+					[actionsLabel]="'Editar'"
+					[selectable]="true"
+					[selectedIds]="selectedEstadoIds()"
+					(selectedIdsChange)="selectedEstadoIds.set($event)"
+					[bulkLoading]="bulkLoading()"
+					(bulkDeleteRequest)="bulkDelete()"
+					(clearSelectionRequest)="clearSelection()"
+				></app-tables>
+
+				<div *ngIf="estados.length === 0" style="margin-top:12px;color:#666">
+					No hay datos de Estados (debug):
+					<pre style="max-height:200px;overflow:auto;background:#fafafa;padding:8px;border:1px solid #eee">{{ estados | json }}</pre>
+				</div>
+
+				<!-- Detalle seleccionado: municipios + poblacion -->
+				<div *ngIf="selectedEstado" class="estado-detail" style="margin-top:16px">
+					<h4>Detalles: {{ selectedEstado.nombreEstado }}</h4>
+					<div style="display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap">
+						<div style="flex:1;min-width:360px">
+							<h5 style="display:flex;align-items:center;gap:8px">
+								<span>Municipios</span>
+								<button type="button" aria-label="Alternar municipios" class="collapse-toggle" (click)="toggleMunicipios()" style="border:none;background:transparent;cursor:pointer;padding:2px 6px;font-size:14px">
+								  {{ collapsedMunicipios ? '►' : '▼' }}
+								</button>
+							</h5>
+							<div class="table-toolbar">
+								<input maxlength="30" aria-label="Buscar Municipios" class="search-input" type="text" placeholder="Buscar Municipios... (máx 30 caracteres)" [ngModel]="searchMunicipios" (ngModelChange)="onMunicipiosInput($event)" />
+								<button type="button" class="btn-add" (click)="onAddMunicipio()">+ Añadir Municipio</button>
+							</div>
+							<div *ngIf="!collapsedMunicipios">
+							<app-tables
+								[value]="municipios"
+								[rows]="municipiosPageSize"
+								[first]="(municipiosPageNumber-1)*municipiosPageSize"
+								[excludeColumns]="['__raw','idMunicipio']"
+								[totalRecords]="municipiosTotalCount"
+								[rowIdKey]="'idMunicipio'"
+								(pageChange)="onMunicipiosPage($event)"
+								(rowClick)="onMunicipioClick($event)"
+								[actionsTemplate]="rowActions"
+								(actionClick)="onRowActionEdit($event)"
+								[selectable]="true"
+								[selectedIds]="selectedMunicipioIds()"
+								(selectedIdsChange)="selectedMunicipioIds.set($event)"
+								[bulkLoading]="bulkLoading()"
+								(bulkDeleteRequest)="bulkDelete()"
+								(clearSelectionRequest)="clearSelection()"
+							></app-tables>
+							</div>
+						</div>
+						<div style="width:320px;min-width:280px">
+							<h5>Población</h5>
+							<div *ngIf="poblacionEstado; else noPob">
+								<table class="small-table">
+									<tr><td>Año 2000</td><td>{{ poblacionEstado.anio2000 | number }}</td></tr>
+									<tr><td>Año 2005</td><td>{{ poblacionEstado.anio2005 | number }}</td></tr>
+									<tr><td>Año 2010</td><td>{{ poblacionEstado.anio2010 | number }}</td></tr>
+									<tr><td>Año 2020</td><td>{{ poblacionEstado.anio2020 | number }}</td></tr>
+								</table>
+							</div>
+							<ng-template #noPob><div style="color:#666">No hay datos de población para este estado.</div></ng-template>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Localidades del municipio seleccionado -->
+								<div *ngIf="selectedMunicipio" style="margin-top:14px">
+										<h5 style="display:flex;align-items:center;gap:8px">
+											<span>Localidades de {{ selectedMunicipio?.nombreMunicipio || selectedMunicipio?.idMunicipio }}</span>
+											<button type="button" aria-label="Alternar localidades" class="collapse-toggle" (click)="toggleLocalidades()" style="border:none;background:transparent;cursor:pointer;padding:2px 6px;font-size:14px">
+												{{ collapsedLocalidades ? '►' : '▼' }}
+											</button>
+										</h5>
+					<div class="table-toolbar">
+						<input maxlength="30" aria-label="Buscar Localidades" class="search-input" type="text" placeholder="Buscar Localidades... (máx 30 caracteres)" [ngModel]="searchLocalidades" (ngModelChange)="onLocalidadesInput($event)" />
+						<button type="button" class="btn-add" (click)="onAddLocalidad()">+ Añadir Localidad</button>
+					</div>
+					<div *ngIf="!collapsedLocalidades">
+					<app-tables
+						[value]="localidades"
+						[rows]="localidadesPageSize"
+						[first]="(localidadesPageNumber-1)*localidadesPageSize"
+						[excludeColumns]="['__raw','idLocalidad']"
+						[totalRecords]="localidadesTotalCount"
+						[rowIdKey]="'idLocalidad'"
+						(pageChange)="onLocalidadesPage($event)"
+							[actionsTemplate]="rowActions"
+							(actionClick)="onRowActionEdit($event)"
+							[selectable]="true"
+							[selectedIds]="selectedLocalidadIds()"
+							(selectedIdsChange)="selectedLocalidadIds.set($event)"
+							[bulkLoading]="bulkLoading()"
+							(bulkDeleteRequest)="bulkDelete()"
+							(clearSelectionRequest)="clearSelection()"
+					></app-tables>
+					</div>
+				</div>
+
+				<!-- Hint when estado is selected but no municipio is selected -->
+				<div *ngIf="selectedEstado && !selectedMunicipio" class="catalogo-hint" style="margin-top:14px">
+					Selecciona un municipio para ver las localidades disponibles.
+				</div>
+
+			<div class="tabpanel" *ngIf="activeTab===4" role="tabpanel">
+				<div class="table-toolbar">
+					<input maxlength="30" aria-label="Buscar Motivos de Egreso" class="search-input" type="text" placeholder="Buscar Motivos... (máx 30 caracteres)" [ngModel]="searchMotivos" (ngModelChange)="onMotivosInput($event)" />
+					<button type="button" class="btn-add" (click)="onAddClick()">+ Añadir {{ addLabel() }}</button>
+				</div>
+				<app-tables
+					[value]="motivosTableData"
+					[rows]="motivosPageSize"
+					[first]="(motivosPageNumber-1)*motivosPageSize"
+					[excludeColumns]="['__raw','idMotivoEgreso']"
+					[totalRecords]="motivosTotalCount"
+					[rowIdKey]="'idMotivoEgreso'"
+					[actionsTemplate]="rowActions"
+					(actionClick)="onRowActionEdit($event)"
+					(pageChange)="onTablePage($event)"
+					(executePageChange)="onTablePage($event)"
+					[selectable]="true"
+					[selectedIds]="selectedIds()"
+					(selectedIdsChange)="selectedIds.set($event)"
+					[bulkLoading]="bulkLoading()"
+					(bulkDeleteRequest)="bulkDelete()"
+					(clearSelectionRequest)="clearSelection()"
+				></app-tables>
+				<div *ngIf="motivos.length === 0" style="margin-top:12px;color:#666">
+					No hay datos de Motivos de Egreso (debug):
+					<pre style="max-height:200px;overflow:auto;background:#fafafa;padding:8px;border:1px solid #eee">{{ motivos | json }}</pre>
+				</div>
+			</div>
+
+			<div class="tabpanel" *ngIf="activeTab===5" role="tabpanel">
+				<div class="table-toolbar">
+					<input maxlength="30" aria-label="Buscar Rangos de Edad" class="search-input" type="text" placeholder="Buscar Rango de Edad... (máx 30 caracteres)" [ngModel]="searchRangos" (ngModelChange)="onRangosInput($event)" />
+					<button type="button" class="btn-add" (click)="onAddClick()">+ Añadir {{ addLabel() }}</button>
+				</div>
+				<app-tables
+					[value]="rangosTableData"
+					[rows]="10"
+					[excludeColumns]="['__raw','id']"
+					[totalRecords]="rangosFiltered.length"
+					[rowIdKey]="'id'"
+					[selectable]="true"
+					[actionsTemplate]="rowActions"
+					(actionClick)="onRowActionEdit($event)"
+					[selectedIds]="selectedIds()"
+					(selectedIdsChange)="selectedIds.set($event)"
+					[bulkLoading]="bulkLoading()"
+					(bulkDeleteRequest)="bulkDelete()"
+					(clearSelectionRequest)="clearSelection()"
+				></app-tables>
+			</div>
+
+			<div class="tabpanel" *ngIf="activeTab===6" role="tabpanel">
+				<div class="table-toolbar">
+					<input maxlength="30" aria-label="Buscar Procedencias" class="search-input" type="text" placeholder="Buscar Procedencias... (máx 30 caracteres)" [ngModel]="searchProcedencias" (ngModelChange)="onProcedenciasInput($event)" />
+					<button type="button" class="btn-add" (click)="onAddClick()">+ Añadir {{ addLabel() }}</button>
+				</div>
+				<app-tables
+					[value]="procedenciasTableData"
+					[rows]="10"
+					[excludeColumns]="['__raw','idProcedencia']"
+					[totalRecords]="procedenciasFiltered.length"
+					[rowIdKey]="'idProcedencia'"
+					[actionsTemplate]="rowActions"
+					(actionClick)="onRowActionEdit($event)"
+					[selectable]="true"
+					[selectedIds]="selectedIds()"
+					(selectedIdsChange)="selectedIds.set($event)"
+					[bulkLoading]="bulkLoading()"
+					(bulkDeleteRequest)="bulkDelete()"
+					(clearSelectionRequest)="clearSelection()"
+				></app-tables>
+			</div>
+			</div>
+</section>
+
+<!-- Inline PrimeNG dialog for editing (opened by Edit action) -->
+<p-dialog [(visible)]="editDialogVisible" appendTo="body" modal="true" [closable]="false" [style]="{width:'520px'}">
+	<ng-container *ngIf="editingItem">
+		<div *ngIf="editingKind === 'enfermedad'">
+			<div class="flex items-center gap-4">
+				<label class="font-semibold w-24">Código ICD</label>
+				<input pInputText id="codigoICD" class="full" autocomplete="off" [(ngModel)]="editingItem.codigoICD" />
+			</div>
+			<div class="flex items-center gap-4">
+				<label class="font-semibold w-24">Nombre</label>
+				<input pInputText id="nombreEnfermedad" class="full" autocomplete="off" [(ngModel)]="editingItem.nombreEnfermedad" />
+			</div>
+			<div class="flex items-center gap-4">
+				<label class="font-semibold w-24">Descripción</label>
+				<textarea pInputTextarea class="full" rows="4" [(ngModel)]="editingItem.descripcion"></textarea>
+			</div>
+		</div>
+		<div *ngIf="editingKind === 'servicio'">
+			<div class="flex items-center gap-4">
+				<label class="font-semibold w-24">Nombre Servicio</label>
+				<input pInputText class="full" autocomplete="off" [(ngModel)]="editingItem.nombreServicio" />
+			</div>
+			<div class="flex items-center gap-4">
+				<label class="font-semibold w-24">Descripción</label>
+				<textarea pInputTextarea class="full" rows="3" [(ngModel)]="editingItem.descripcion"></textarea>
+			</div>
+		</div>
+		<div *ngIf="editingKind === 'derecho' || editingKind === 'motivo' || editingKind === 'procedencia'">
+			<div class="flex items-center gap-4">
+				<label class="font-semibold w-24">Descripción</label>
+				<input pInputText class="full" autocomplete="off" [(ngModel)]="editingItem.descripcion" />
+			</div>
+		</div>
+		<div *ngIf="editingKind === 'estado'">
+			<div class="flex items-center gap-4">
+				<label class="font-semibold w-24">Nombre Estado</label>
+				<input pInputText class="full" autocomplete="off" [(ngModel)]="editingItem.nombreEstado" />
+			</div>
+		</div>
+		<div *ngIf="editingKind === 'rango'">
+			<div class="flex items-center gap-4">
+				<label class="font-semibold w-24">Desde</label>
+					<input pInputText class="full" type="number" min="0" max="110" [(ngModel)]="editingItem.rangoInicial" />
+			</div>
+			<div class="flex items-center gap-4">
+				<label class="font-semibold w-24">Hasta</label>
+					<input pInputText class="full" type="number" min="0" max="110" [(ngModel)]="editingItem.rangoFinal" />
+			</div>
+		</div>
+	</ng-container>
+
+	<ng-template pFooter>
+		<div class="dialog-footer" style="width:100%;display:flex;justify-content:flex-end;gap:8px">
+			<!-- Fallback: use native buttons styled with PrimeNG classes to ensure visibility -->
+			<button id="catalogo-edit-cancel" type="button" class="p-button p-button-secondary" (click)="onCancelEdit()" style="visibility:visible;opacity:1;display:inline-flex;align-items:center;min-height:36px;padding:0.5rem 0.9rem;border-radius:8px;">Cancelar</button>
+			<button id="catalogo-edit-save" type="button" class="p-button p-button-primary" (click)="saveEdit()" [disabled]="saveLoading" style="visibility:visible;opacity:1;display:inline-flex;align-items:center;min-height:36px;padding:0.5rem 0.9rem;border-radius:8px;">{{ saveLoading ? 'Guardando...' : 'Guardar' }}</button>
+		</div>
+	</ng-template>
+</p-dialog>

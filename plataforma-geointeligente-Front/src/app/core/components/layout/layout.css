@@ -1,0 +1,219 @@
+.layout-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* Contenedor principal del sidebar */
+.sidebar-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  pointer-events: none; /* Permite click-through excepto en elementos específicos */
+}
+
+/* Overlay */
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  pointer-events: none;
+}
+
+.sidebar-overlay.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: all;
+}
+
+/* Header */
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 70px;
+  background: #fff;
+  z-index: 1000;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+}
+
+/* Sidebar - Color azul corporativo #0A4DA6 */
+.sidebar {
+  position: fixed;
+  top: 70px; /* Empezar debajo del header */
+  left: 0;
+  width: 80px; /* Aumentado de 60px a 80px para mostrar MENU completo */
+  height: calc(100vh - 70px); /* Altura menos el header */
+  background: #0A4DA6 !important;
+  transition: width 0.3s;
+  z-index: 1001; /* Por encima del header */
+  overflow-x: hidden;
+  box-shadow: 2px 0 4px rgba(0, 0, 0, 0.07);
+  pointer-events: all;
+}
+
+.sidebar.open {
+  width: 280px;
+}
+
+/* Botón flecha */
+.sidebar-toggle {
+  position: absolute;
+  top: 10px; /* Ahora que el sidebar empieza debajo del header, puede estar cerca del top */
+  right: 10px;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  transition: all 0.3s ease;
+  pointer-events: all;
+}
+
+.sidebar-toggle:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.sidebar-toggle .arrow {
+  transition: transform 0.3s ease;
+}
+
+.sidebar.open .sidebar-toggle .arrow {
+  transform: rotate(180deg);
+}
+
+/* Contenido del sidebar */
+.sidebar-content {
+  padding: 20px 0 20px 0; /* Mucho menos padding porque ya no está tapado por el header */
+  opacity: 0;
+  transition: opacity 0.3s ease 0.1s;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.sidebar.open .sidebar-content {
+  opacity: 1;
+}
+
+.sidebar-title {
+  color: white;
+  font-size: 14px; /* Reducido ligeramente para que quepa mejor */
+  font-weight: 700;
+  text-align: center;
+  margin-top: 10px; /* Reducido porque ya no hay conflicto con el header */
+  margin-bottom: 25px;
+  padding: 0 10px; /* Reducido el padding lateral */
+  letter-spacing: 1px; /* Reducido el espaciado */
+  text-transform: uppercase;
+}
+
+/* Menú */
+.sidebar-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-menu li {
+  margin-bottom: 2px;
+}
+
+.sidebar-menu a {
+  display: flex;
+  align-items: center;
+  padding: 15px 20px;
+  color: rgba(255, 255, 255, 0.9);
+  text-decoration: none;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  font-size: 14px;
+  border-left: 4px solid transparent;
+}
+
+.sidebar-menu a:hover,
+.sidebar-menu a.active {
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  border-left: 4px solid #fff;
+  padding-left: 24px;
+}
+
+.sidebar-menu a .menu-icon {
+  margin-right: 15px;
+  font-size: 16px;
+  width: 20px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.sidebar-menu a:hover .menu-icon,
+.sidebar-menu a.active .menu-icon {
+  color: white;
+}
+
+.sidebar-menu a .menu-text {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Contenido principal (sin sidebar) */
+.main-content {
+  margin-top: var(--nav-height, 70px); /* espacio para el header */
+  margin-left: 0;
+  padding: 2rem;
+  padding-top: 0;
+  transition: margin-left 0.0s;
+  min-height: calc(100vh - var(--nav-height, 70px));
+  background: #fff;
+  position: relative;
+  z-index: 1;
+}
+
+.main-content.expanded {
+  margin-left: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sidebar {
+    top: 70px;
+    width: 0;
+    height: calc(100vh - 70px);
+  }
+  .sidebar.open {
+    width: 220px;
+  }
+  .main-content,
+  .main-content.expanded {
+    margin-left: 0;
+    padding: 1rem;
+    padding-top: 90px; /* Mantener el padding-top para el header */
+  }
+}
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 9;
+}

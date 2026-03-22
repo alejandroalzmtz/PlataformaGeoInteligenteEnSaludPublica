@@ -1,0 +1,22 @@
+<div class="ged-root">
+  <div class="ged-header">Editar {{ kind }}</div>
+  <div class="ged-body">
+    <form (ngSubmit)="save()" class="ged-form">
+      <ng-container *ngFor="let k of keys()">
+        <div class="ged-field">
+          <label class="ged-label">{{ labelFor(k) }}</label>
+          <ng-container *ngIf="!isTextarea(k); else ta">
+            <input maxlength="35" class="ged-input p-inputtext" [(ngModel)]="formData[k]" name="{{k}}" [readonly]="isReadOnly(k)" [attr.aria-readonly]="isReadOnly(k)" />
+          </ng-container>
+          <ng-template #ta>
+            <textarea maxlength="35" class="ged-textarea" rows="3" [(ngModel)]="formData[k]" name="{{k}}" [readonly]="isReadOnly(k)" [attr.aria-readonly]="isReadOnly(k)"></textarea>
+          </ng-template>
+        </div>
+      </ng-container>
+    </form>
+  </div>
+  <div class="ged-footer">
+    <button mat-button (click)="cancel()">Cancelar</button>
+    <button mat-button color="primary" (click)="save()" [disabled]="loading">Guardar</button>
+  </div>
+</div>

@@ -1,0 +1,266 @@
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+:host {
+  display: block;
+  height: 100vh;
+  overflow: hidden; /* evita scroll sólo en login */
+}
+
+.login-container {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  margin: 0;
+  background: url('/images/Nubes.webp') center center / cover no-repeat fixed;
+  /*background-size: cover;*/
+}
+
+/* Evita que la tarjeta genere scroll extra */
+.login-card {
+  max-width: 360px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Si algún elemento empuja y genera scroll, controla overflow */
+.login-container > * {
+  flex-shrink: 0;
+}
+
+/* Si la imagen tiene una extensión diferente, ajusta: */
+/* url('/images/nube.png') o url('/images/nube.webp') */
+
+/* Botón de regresar */
+.back-btn {
+  position: absolute;
+  top: 2rem;
+  left: 2rem;
+  background: rgba(255, 255, 255, 0.25);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  padding: 0.75rem 1.5rem;
+  border-radius: 25px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  /* sólo transición para propiedades de hover (sin animaciones adicionales) */
+  transition: background 0.12s ease, box-shadow 0.12s ease;
+  backdrop-filter: blur(10px);
+  z-index: 10;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.back-btn:hover {
+  background: rgba(255, 255, 255, 0.35);
+  border-color: rgba(255, 255, 255, 0.6);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.login-card {
+  background: rgba(255, 255, 255, 0.95); /* ✅ Fondo semi-transparente */
+  backdrop-filter: blur(20px); /* ✅ Efecto de cristal */
+  border-radius: 20px;
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(255, 255, 255, 0.2); /* ✅ Borde sutil */
+  width: 100%;
+  max-width: 400px;
+  padding: 3rem 2.5rem;
+  text-align: center;
+}
+
+/* Header con logo y título */
+.login-header {
+  margin-bottom: 2.5rem;
+}
+
+.login-logo {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: contain;
+  margin-bottom: 1rem;
+  background: white;
+  padding: 8px;
+  /* logo sin sombra */
+  box-shadow: none;
+}
+
+.login-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin: 0;
+  letter-spacing: -0.5px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Formulario */
+.login-form {
+  text-align: left;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #4a5568;
+  margin-bottom: 0.5rem;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border: 2px solid rgba(226, 232, 240, 0.8);
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  background: rgba(255, 255, 255, 0.9);
+  box-sizing: border-box;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #4c63d2;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(76, 99, 210, 0.1);
+}
+
+/* Campo de contraseña con botón de mostrar/ocultar */
+.password-input-container {
+  position: relative;
+}
+
+.password-input {
+  padding-right: 3rem;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: #718096;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.password-toggle:hover {
+  background: rgba(237, 242, 247, 0.8);
+}
+
+/* Checkbox grupo */
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.checkbox-group input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #4c63d2;
+  cursor: pointer;
+}
+
+.checkbox-label {
+  font-size: 0.9rem;
+  color: #4a5568;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* Error message styles */
+.error-message {
+  color: #ef4444;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+  text-align: center;
+  background: rgba(254, 226, 226, 0.9);
+  padding: 0.75rem;
+  border-radius: 6px;
+  border-left: 4px solid #ef4444;
+}
+
+/* Botón de ingreso */
+.login-btn {
+  width: 100%;
+  /* color de marca solicitado ahora */
+  background: #0A4DA6;
+  color: white;
+  border: none;
+  padding: 0.875rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  /* sólo transición para background (sin movimiento ni sombras) */
+  transition: background 0.12s ease;
+  text-transform: none;
+  box-shadow: none; /* eliminar sombra */
+}
+
+.login-btn:hover:not(:disabled) {
+  /* Hover: oscurecer ligeramente el fondo, sin sombra ni movimiento */
+  background: #083a7f;
+}
+
+.login-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .login-container {
+    padding: 1rem;
+  }
+  
+  .login-card {
+    padding: 2rem 1.5rem;
+  }
+  
+  .login-logo {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .login-title {
+    font-size: 1.75rem;
+  }
+  
+  .form-input {
+    padding: 0.75rem 0.875rem;
+  }
+  
+  .login-btn {
+    padding: 0.75rem 1.25rem;
+    font-size: 1rem;
+  }
+  
+  .back-btn {
+    top: 1rem;
+    left: 1rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+  }
+}

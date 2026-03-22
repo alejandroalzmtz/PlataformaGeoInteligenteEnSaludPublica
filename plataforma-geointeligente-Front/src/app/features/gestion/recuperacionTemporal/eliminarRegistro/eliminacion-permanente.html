@@ -1,0 +1,13 @@
+<div class="modal-container">
+  <h2>Eliminar permanentemente</h2>
+
+  <p class="text">
+    ¿Seguro que deseas eliminar permanentemente el registro <b>#{{ data.idRegistro }}</b>?  
+    <br>Esta acción <b>no se puede deshacer</b>.
+  </p>
+
+  <div class="actions">
+    <button mat-button (click)="cancelar()">Cancelar</button>
+    <button mat-raised-button color="warn" (click)="confirmarEliminacion()">Eliminar</button>
+  </div>
+</div>

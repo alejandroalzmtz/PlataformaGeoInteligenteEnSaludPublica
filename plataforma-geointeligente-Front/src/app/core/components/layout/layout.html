@@ -1,0 +1,13 @@
+<div class="layout-container">
+  <app-nav></app-nav>
+
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+</div>
+
+<style>
+  .layout-container { min-height: 100vh; background: #fff; }
+  app-nav { position: fixed; top: 0; left: 0; width: 100vw; z-index: 1000; }
+  .main-content { margin-top: 70px; padding: 2rem; min-height: calc(100vh - 70px); background: #fff; }
+</style>

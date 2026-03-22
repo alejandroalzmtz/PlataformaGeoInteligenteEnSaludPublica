@@ -1,0 +1,86 @@
+<div class="map-container">
+  <div class="map-area">
+    <!-- ECharts Map -->
+    <div
+      echarts
+      [options]="mapOpts"
+      [merge]="mapOpts"
+      class="map-echart"
+      (chartClick)="onChartClick($event)">
+    </div>
+
+    <!-- Indicador de carga -->
+    @if (isLoading) {
+    <div class="map-loading-overlay">
+      <div class="map-loading-spinner">
+        <mat-icon>sync</mat-icon>
+        <p>Cargando mapa...</p>
+      </div>
+    </div>
+    }
+
+    <!-- Controles de indicadores -->
+    <div class="map-controls">
+      <button
+        class="paint-btn"
+        [class.active]="currentIndicator === 'casos'"
+        (click)="setIndicator('casos')"
+      >
+        Casos
+      </button>
+      <button
+        class="paint-btn"
+        [class.active]="currentIndicator === 'incidencia'"
+        (click)="setIndicator('incidencia')"
+      >
+        Incidencia
+      </button>
+      <button
+        class="paint-btn"
+        [class.active]="currentIndicator === 'mortalidad'"
+        (click)="setIndicator('mortalidad')"
+      >
+        Mortalidad
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Detalle de estado seleccionado -->
+@if (selectedState) {
+<div class="state-detail-table">
+  <div class="state-detail-header">
+    <h3><mat-icon>place</mat-icon> {{ selectedState.nombreEstado }}</h3>
+    <button class="close-detail-btn" (click)="closeStateDetail()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <div class="state-detail-content">
+    <h4>Indicadores Epidemiológicos</h4>
+    <table class="state-info-table">
+      <tbody>
+        <tr>
+          <th>Total Casos</th>
+          <td>{{ selectedState.casos | number }}</td>
+        </tr>
+        <tr>
+          <th>Defunciones</th>
+          <td>{{ selectedState.defunciones | number }}</td>
+        </tr>
+        <tr>
+          <th>Población</th>
+          <td>{{ selectedState.poblacion ? (selectedState.poblacion | number) : 'N/A' }}</td>
+        </tr>
+        <tr>
+          <th>Tasa Incidencia</th>
+          <td>{{ selectedState.tasaIncidencia != null ? (selectedState.tasaIncidencia | number:'1.2-2') : 'N/A' }} <span class="unit">por 100,000 hab</span></td>
+        </tr>
+        <tr>
+          <th>Tasa Mortalidad</th>
+          <td>{{ selectedState.tasaMortalidad != null ? (selectedState.tasaMortalidad | number:'1.2-2') : 'N/A' }} <span class="unit">por 100,000 hab</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+}

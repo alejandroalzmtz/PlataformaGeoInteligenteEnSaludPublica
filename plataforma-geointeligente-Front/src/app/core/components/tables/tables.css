@@ -1,0 +1,278 @@
+:host {
+  display: block;
+}
+
+.global-table ::ng-deep table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.global-table ::ng-deep thead th {
+  background: #f5f7fa;
+  color: #222;
+  padding: 0.75rem 0.5rem;
+  border-bottom: 1px solid #e6e9ef;
+  text-align: left;
+}
+
+.global-table ::ng-deep tbody td {
+  padding: 0.6rem 0.5rem;
+  border-bottom: 1px solid #eee;
+}
+
+.global-table ::ng-deep tbody tr:hover {
+  background: #fbfcfe;
+}
+
+.paginator-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.paginator-row.justify-end {
+  justify-content: flex-end;
+}
+
+.paginator-row.center {
+  justify-content: center;
+}
+
+/* PrimeNG paginator styling tweaks to match requested look */
+.p-paginator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Use ::ng-deep to style PrimeNG internal elements from component CSS */
+::ng-deep .p-paginator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0;
+}
+
+::ng-deep .p-paginator .p-paginator-pages {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+::ng-deep .p-paginator .p-paginator-pages .p-paginator-page {
+  margin: 0;
+  padding: 0.15rem 0.55rem;
+  min-width: 2rem;
+  height: 2rem;
+  line-height: 2rem;
+  border-radius: 6px;
+  color: #1f2937;
+  background: transparent;
+  font-weight: 500;
+}
+
+::ng-deep .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
+  background: #071933;
+  color: #fff !important;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  box-shadow: 0 4px 10px rgba(7, 25, 51, 0.18);
+  border: 2px solid rgba(255, 255, 255, 0.06);
+  font-weight: 700;
+  font-size: 14px;
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease;
+}
+
+::ng-deep .p-paginator .p-paginator-pages .p-paginator-page.p-highlight:active {
+  transform: scale(0.98);
+  box-shadow: 0 2px 6px rgba(7, 25, 51, 0.2);
+}
+
+::ng-deep .p-paginator .p-paginator-pages .p-paginator-ellipsis {
+  margin: 0 0.25rem;
+  color: #6b7280;
+}
+
+::ng-deep .p-paginator .p-paginator-first,
+::ng-deep .p-paginator .p-paginator-prev,
+::ng-deep .p-paginator .p-paginator-next,
+::ng-deep .p-paginator .p-paginator-last {
+  color: #374151;
+}
+
+::ng-deep .p-paginator .p-paginator-rpp-options select {
+  margin-left: 0.5rem;
+  border-radius: 8px;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+}
+
+/* rpp dropdown wrapper and p-dropdown tweaks */
+.rpp-wrapper {
+  margin-left: 0.8rem;
+}
+
+/* native select styled to look like PrimeNG small dropdown */
+.native-select {
+  min-width: 3.2rem;
+  padding: 0.35rem 0.6rem;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  color: #111827;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+/* small caret to the right */
+.rpp-wrapper {
+  position: relative;
+}
+.rpp-wrapper::after {
+  content: '\25BC';
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #6b7280;
+  font-size: 0.6rem;
+}
+
+/* Checkbox grandote en la tabla */
+:host ::ng-deep .global-table input[type='checkbox'] {
+  width: 18px;
+  height: 18px;
+  transform: scale(1.25);
+  cursor: pointer;
+  accent-color: #1976d2; /* azul material */
+}
+
+/* Opcional: más área clickeable para que no anden atinandole */
+:host ::ng-deep .global-table th,
+:host ::ng-deep .global-table td {
+  vertical-align: middle;
+}
+
+:host ::ng-deep .global-table th:first-child,
+:host ::ng-deep .global-table td:first-child {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+:host ::ng-deep .global-table .selected-row td {
+  background: rgba(33, 150, 243, 0.08);
+}
+
+/* Bulk bar styling (match recuperacion-temporal style) */
+.bulk-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  border-bottom: 1px solid #eef2f6;
+  background: #fff;
+  gap: 12px;
+}
+.bulk-bar .left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #1f2937;
+  font-weight: 600;
+}
+.bulk-bar .left mat-icon {
+  color: #1976d2;
+}
+.bulk-bar .right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.bulk-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.btn-danger {
+  background: #c62828;
+  color: #fff;
+}
+.btn-ghost {
+  color: #374151;
+}
+
+/* Specific styling for per-row edit icon buttons when declared via templates
+   (matches the visual treatment used in database-management) */
+button.edit-action .mat-icon,
+button.edit-action svg {
+  color: #0A4DA6 !important;
+  fill: #0A4DA6 !important;
+}
+
+button.edit-action:hover .mat-icon,
+button.edit-action:focus .mat-icon,
+button.edit-action:active .mat-icon,
+button.edit-action:hover svg,
+button.edit-action:focus svg,
+button.edit-action:active svg {
+  color: #083a7f !important;
+  fill: #083a7f !important;
+}
+
+/* Slightly larger hit area for icon buttons inside action cells */
+:host ::ng-deep .global-table td button.edit-action {
+  min-width: 36px;
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+}
+
+/* Hover background and subtle elevation to match database-management behavior */
+button.edit-action {
+  background: transparent;
+  transition: background 140ms ease, transform 120ms ease, box-shadow 120ms ease;
+}
+
+button.edit-action:hover,
+button.edit-action:focus {
+  background: rgba(10,77,166,0.10) !important; /* light blue circle */
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(7,25,51,0.08);
+}
+
+button.edit-action:active {
+  transform: translateY(0);
+  box-shadow: 0 3px 8px rgba(7,25,51,0.06);
+}
+
+/* When the row is selected, make the action button appear active (filled circle + white icon) */
+:host ::ng-deep .global-table tr.selected-row td button.edit-action {
+  background: #071933 !important; /* dark navy */
+}
+
+:host ::ng-deep .global-table tr.selected-row td button.edit-action .mat-icon,
+:host ::ng-deep .global-table tr.selected-row td button.edit-action svg {
+  color: #ffffff !important;
+  fill: #ffffff !important;
+}
+
+/* Styling for plain icon buttons (non-Material) to match behavior */
+.icon-btn .mat-icon, .icon-btn svg {
+  color: #0A4DA6;
+}
+.icon-btn:hover .mat-icon, .icon-btn:focus .mat-icon { color: #083a7f; }
+

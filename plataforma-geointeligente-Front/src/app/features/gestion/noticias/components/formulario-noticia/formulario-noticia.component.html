@@ -1,0 +1,43 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="noticia-form-section">
+  <div class="form-row">
+    <!-- Título -->
+    <mat-form-field class="form-field">
+      <mat-label>Título</mat-label>
+      <input matInput formControlName="titulo" maxlength="200" placeholder="Título de la noticia">
+      <mat-error *ngIf="form.get('titulo')?.hasError('required')">
+        Este campo es requerido
+      </mat-error>
+    </mat-form-field>
+
+    <!-- URL imagen -->
+    <mat-form-field class="form-field">
+      <mat-label>URL imagen</mat-label>
+      <input matInput formControlName="imagenPrincipal" placeholder="https://..." (input)="onImageUrlChange()">
+    </mat-form-field>
+  </div>
+
+  <!-- Contenido -->
+  <mat-form-field class="form-field-full">
+    <mat-label>Contenido</mat-label>
+    <textarea matInput rows="5" formControlName="contenido" placeholder="Escribe el contenido de la noticia..."></textarea>
+    <mat-error *ngIf="form.get('contenido')?.hasError('required')">
+      Este campo es requerido
+    </mat-error>
+  </mat-form-field>
+
+  <!-- Vista previa de imagen -->
+  <div class="image-preview" *ngIf="imagePreview">
+    <img [src]="imagePreview" alt="Vista previa" />
+  </div>
+
+  <!-- Botones de acción -->
+  <div class="form-actions">
+    <button class="btn-cancel" type="button" (click)="onCancel()" *ngIf="editingNoticia">
+      Cancelar edición
+    </button>
+    <button class="btn-primary" type="submit" [disabled]="!isFormComplete || isSaving">
+      <mat-icon>{{ editingNoticia ? 'save' : 'add' }}</mat-icon>
+      {{ isSaving ? 'Guardando...' : (editingNoticia ? 'Actualizar Noticia' : 'Crear Noticia') }}
+    </button>
+  </div>
+</form>

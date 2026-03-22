@@ -1,0 +1,85 @@
+.save-panel-form {
+  width: 100%;
+  max-width: 420px;
+  padding: 20px 22px;
+  box-sizing: border-box;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.subtitle {
+  margin: 6px 0 16px;
+  font-size: 0.95rem;
+  color: #6b7280;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.field label {
+  font-size: 0.85rem;
+  color: #374151;
+}
+
+.text-input {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 0.95rem;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+}
+
+.text-input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.btn {
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border: none;
+}
+
+.cancel {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.cancel:hover {
+  background: #d1d5db;
+}
+
+.confirm {
+  background: #0A4DA6;
+  color: #fff;
+}
+
+.confirm:hover:not(:disabled) {
+  background: #083a7f;
+}
+
+.confirm:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

@@ -1,0 +1,387 @@
+<h2 mat-dialog-title>{{ tituloModal }}</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form" class="form-grid">
+    <app-date-input
+      label="Fecha Ingreso"
+      [showRequired]="true"
+      [(value)]="fechaIngresoStr"
+      [maxCalendarDate]="maxDate"
+      [errorMessage]="getFechaIngresoError()"
+      (dateBlur)="onFechaIngresoBlur()"
+    >
+    </app-date-input>
+
+    <app-date-input
+      label="Fecha Egreso"
+      [(value)]="fechaEgresoStr"
+      [minCalendarDate]="fechaIngresoStr"
+      [maxCalendarDate]="maxDate"
+      [errorMessage]="getFechaEgresoError()"
+      (dateBlur)="onFechaEgresoBlur()"
+    >
+    </app-date-input>
+
+    <!--campo de días de estancia ya no se usa-->
+
+    <mat-form-field appearance="outline" [class.has-backend-error]="hasBackendError('idEstado')">
+      <mat-label>Estado</mat-label>
+      <input
+        matInput
+        formControlName="estadoSearch"
+        [matAutocomplete]="autoEstado"
+        placeholder="Buscar estado (ej. Jalisco)"
+      />
+      <mat-autocomplete
+        #autoEstado="matAutocomplete"
+        [displayWith]="displayEstado"
+        (optionSelected)="onEstadoSelected($event)"
+      >
+        <mat-option *ngFor="let s of filteredEstados" [value]="s">
+          {{ s.nombreEstado }}
+        </mat-option>
+        <mat-option *ngIf="filteredEstados.length === 0" disabled>
+          No se encontraron resultados
+        </mat-option>
+      </mat-autocomplete>
+      <input type="hidden" formControlName="idEstado" />
+      <mat-hint>Escribe para buscar o selecciona de la lista</mat-hint>
+      <mat-error>{{ getEstadoError() }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" [class.has-backend-error]="hasBackendError('idMunicipio')">
+      <mat-label>Municipio</mat-label>
+      <input
+        matInput
+        formControlName="municipioSearch"
+        [matAutocomplete]="autoMunicipio"
+        placeholder="Buscar municipio (ej. Guadalajara)"
+        [disabled]="!form.get('idEstado')?.value"
+      />
+      <mat-autocomplete
+        #autoMunicipio="matAutocomplete"
+        [displayWith]="displayMunicipio"
+        (optionSelected)="onMunicipioSelected($event)"
+      >
+        <mat-option *ngFor="let m of filteredMunicipios" [value]="m">
+          {{ m.nombreMunicipio }}
+        </mat-option>
+        <mat-option *ngIf="filteredMunicipios.length === 0" disabled>
+          No se encontraron resultados
+        </mat-option>
+      </mat-autocomplete>
+      <input type="hidden" formControlName="idMunicipio" />
+      <mat-hint>Primero selecciona un estado</mat-hint>
+      <mat-error>{{ getMunicipioError() }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" [class.has-backend-error]="hasBackendError('idLoc')">
+      <mat-label>Localidad</mat-label>
+      <input
+        matInput
+        formControlName="localidadSearch"
+        [matAutocomplete]="autoLocalidad"
+        placeholder="Buscar localidad"
+        [disabled]="!form.get('idMunicipio')?.value"
+      />
+      <mat-autocomplete
+        #autoLocalidad="matAutocomplete"
+        [displayWith]="displayLocalidad"
+        (optionSelected)="onLocalidadSelected($event)"
+      >
+        <mat-option *ngFor="let l of filteredLocalidades" [value]="l">
+          {{ l.nombreLocalidad || l.nombre || l.label }}
+        </mat-option>
+        <mat-option *ngIf="filteredLocalidades.length === 0" disabled>
+          No se encontraron resultados
+        </mat-option>
+      </mat-autocomplete>
+      <input type="hidden" formControlName="idLoc" />
+      <mat-hint>Primero selecciona un municipio</mat-hint>
+      <mat-error>{{ getLocalidadError() }}</mat-error>
+    </mat-form-field>
+
+    <!-- HOSPITAL (CLUES) -->
+    <mat-form-field appearance="outline" [class.has-backend-error]="hasBackendError('CLUES')">
+      <mat-label>Hospital (CLUES)</mat-label>
+
+      <div style="display: flex; align-items: center; gap: 8px">
+        <input
+          matInput
+          formControlName="hospitalSearch"
+          [matAutocomplete]="autoHospital"
+          placeholder="Buscar hospital por nombre o CLUES"
+          [disabled]="!form.get('idLoc')?.value"
+          (focus)="onHospitalSearch(form.get('hospitalSearch')?.value ?? '')"
+          (click)="onHospitalSearch(form.get('hospitalSearch')?.value ?? '')"
+          (input)="onHospitalSearch($event.target.value)"
+        />
+        <mat-progress-spinner
+          *ngIf="hospitalLoading"
+          diameter="18"
+          mode="indeterminate"
+        ></mat-progress-spinner>
+      </div>
+
+      <mat-autocomplete
+        #autoHospital="matAutocomplete"
+        [displayWith]="displayHospital"
+        (optionSelected)="onHospitalSelected($event)"
+      >
+        <mat-option *ngFor="let h of filteredHospitales" [value]="h">
+          {{ h.clues }} — {{ h.nombreUnidad }} ({{ h.nombreInstitucion }})
+        </mat-option>
+
+        <mat-hint *ngIf="noHospEnLoc" style="color: #bec628">
+          No hay hospitales en esta localidad. Mostrando hospitales del municipio.
+        </mat-hint>
+
+        <mat-option *ngIf="filteredHospitales.length === 0" disabled>
+          No se encontraron resultados
+        </mat-option>
+      </mat-autocomplete>
+
+      <input type="hidden" formControlName="CLUES" />
+
+      <mat-hint>Primero selecciona una localidad</mat-hint>
+      <mat-error>{{ getHospitalError() }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" [class.has-backend-error]="hasBackendError('edad')">
+      <mat-label>Edad</mat-label>
+      <input
+        matInput
+        type="number"
+        min="0"
+        max="150"
+        step="1"
+        placeholder="Ej. 45"
+        formControlName="edad"
+        (keydown)="blockNonNumeric($event)"
+      />
+      <mat-hint>Edad del paciente (0-150 años)</mat-hint>
+      <mat-error>{{ getEdadError() || getBackendError('edad') }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" [class.has-backend-error]="hasBackendError('idSexo')">
+      <mat-label>Sexo</mat-label>
+      <mat-select formControlName="idSexo">
+        <mat-option [value]="1">Femenino</mat-option>
+        <mat-option [value]="2">Masculino</mat-option>
+        <mat-option [value]="3">No especificado</mat-option>
+      </mat-select>
+      <mat-error *ngIf="hasBackendError('idSexo')">{{ getBackendError('idSexo') }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field
+      appearance="outline"
+      [class.has-backend-error]="hasBackendError('idDerechoHab')"
+    >
+      <mat-label>Derecho de Habitación</mat-label>
+      <input
+        matInput
+        formControlName="derechoHabSearch"
+        [matAutocomplete]="autoDerechoHab"
+        placeholder="Buscar derechohabitación (ej. IMSS)"
+      />
+      <mat-autocomplete
+        #autoDerechoHab="matAutocomplete"
+        [displayWith]="displayDerechoHab"
+        (optionSelected)="onDerechoHabSelected($event)"
+      >
+        <mat-option *ngFor="let d of filteredDerechos" [value]="d">
+          {{ d.descripcion }}
+        </mat-option>
+        <mat-option *ngIf="filteredDerechos.length === 0" disabled>
+          No se encontraron resultados
+        </mat-option>
+      </mat-autocomplete>
+      <input type="hidden" formControlName="idDerechoHab" />
+      <mat-hint>Institución de salud a la que tiene derecho</mat-hint>
+      <mat-error>{{ getDerechoHabError() }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field
+      appearance="outline"
+      [class.has-backend-error]="hasBackendError('idServicioIngreso')"
+    >
+      <mat-label>Servicio de Ingreso</mat-label>
+      <input
+        matInput
+        formControlName="servicioIngresoSearch"
+        [matAutocomplete]="autoServicioIngreso"
+        placeholder="Buscar servicio (ej. Dermatología)"
+      />
+      <mat-autocomplete
+        #autoServicioIngreso="matAutocomplete"
+        [displayWith]="displayServicio"
+        (optionSelected)="onServicioIngresoSelected($event)"
+      >
+        <mat-option *ngFor="let s of filteredServicios" [value]="s">
+          {{ s.nombreServicio }}
+        </mat-option>
+        <mat-option *ngIf="filteredServicios.length === 0" disabled>
+          No se encontraron resultados
+        </mat-option>
+      </mat-autocomplete>
+      <input type="hidden" formControlName="idServicioIngreso" />
+      <mat-hint>Servicio médico donde ingresó el paciente</mat-hint>
+      <mat-error>{{ getServicioIngresoError() }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field
+      appearance="outline"
+      [class.has-backend-error]="hasBackendError('idServicioEgreso')"
+    >
+      <mat-label>Servicio de Egreso</mat-label>
+      <input
+        matInput
+        formControlName="servicioEgresoSearch"
+        [matAutocomplete]="autoServicioEgreso"
+        placeholder="Buscar servicio (ej. Cirugía)"
+      />
+      <mat-autocomplete
+        #autoServicioEgreso="matAutocomplete"
+        [displayWith]="displayServicio"
+        (optionSelected)="onServicioEgresoSelected($event)"
+      >
+        <mat-option *ngFor="let s of filteredServicios" [value]="s">
+          {{ s.nombreServicio }}
+        </mat-option>
+        <mat-option *ngIf="filteredServicios.length === 0" disabled>
+          No se encontraron resultados
+        </mat-option>
+      </mat-autocomplete>
+      <input type="hidden" formControlName="idServicioEgreso" />
+      <mat-hint>Servicio médico donde egresó el paciente</mat-hint>
+      <mat-error>{{ getServicioEgresoError() }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field
+      appearance="outline"
+      [class.has-backend-error]="hasBackendError('idProcedencia')"
+    >
+      <mat-label>Procedencia</mat-label>
+      <input
+        matInput
+        formControlName="procedenciaSearch"
+        [matAutocomplete]="autoProcedencia"
+        placeholder="Buscar procedencia (ej. urgencias)"
+      />
+      <mat-autocomplete
+        #autoProcedencia="matAutocomplete"
+        [displayWith]="displayProcedencia"
+        (optionSelected)="onProcedenciaSelected($event)"
+      >
+        <mat-option *ngFor="let p of filteredProcedencias" [value]="p">
+          {{ p.descripcion || p.nombre || p.label }}
+        </mat-option>
+        <mat-option *ngIf="filteredProcedencias.length === 0" disabled>
+          No se encontraron resultados
+        </mat-option>
+      </mat-autocomplete>
+      <input type="hidden" formControlName="idProcedencia" />
+      <mat-hint>Lugar de donde proviene el paciente</mat-hint>
+      <mat-error>{{ getProcedenciaError() }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field
+      appearance="outline"
+      [class.has-backend-error]="hasBackendError('idMotivoEgreso')"
+    >
+      <mat-label>Motivo de Egreso</mat-label>
+      <input
+        matInput
+        formControlName="motivoEgresoSearch"
+        [matAutocomplete]="autoMotivoEgreso"
+        placeholder="Buscar motivo (ej. Mejoría)"
+      />
+      <mat-autocomplete
+        #autoMotivoEgreso="matAutocomplete"
+        [displayWith]="displayMotivo"
+        (optionSelected)="onMotivoEgresoSelected($event)"
+      >
+        <mat-option *ngFor="let m of filteredMotivos" [value]="m">
+          {{ m.descripcion }}
+        </mat-option>
+        <mat-option *ngIf="filteredMotivos.length === 0" disabled>
+          No se encontraron resultados
+        </mat-option>
+      </mat-autocomplete>
+      <input type="hidden" formControlName="idMotivoEgreso" />
+      <mat-hint>Razón por la cual el paciente egresó</mat-hint>
+      <mat-error>{{ getMotivoEgresoError() }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field
+      appearance="outline"
+      [class.has-backend-error]="
+        hasBackendError('idEnfermedad') || hasBackendError('enfermedadDisplay')
+      "
+    >
+      <mat-label>Enfermedad</mat-label>
+      <div style="display: flex; align-items: center; gap: 8px">
+        <input
+          matInput
+          formControlName="enfermedadDisplay"
+          [matAutocomplete]="auto"
+          placeholder="C509 - TUMOR MALIGNO DE LA MAMA, PARTE NO ESPECIFICADA"
+          (focus)="onEnfermedadFocus()"
+        />
+        <mat-progress-spinner
+          *ngIf="enfermedadLoading"
+          diameter="18"
+          mode="indeterminate"
+        ></mat-progress-spinner>
+      </div>
+      <mat-autocomplete
+        #auto="matAutocomplete"
+        (optionSelected)="onEnfermedadSelected($event)"
+        [displayWith]="displayEnfermedad"
+      >
+        <mat-option
+          *ngFor="let e of filteredEnfermedades"
+          [value]="e"
+          (click)="selectEnfermedad(e)"
+        >
+          {{ e.nombreEnfermedad }} {{ e.codigoICD ? '(' + e.codigoICD + ')' : '' }}
+        </mat-option>
+        <mat-option
+          *ngIf="enfermedadHasNext && !enfermedadLoadingMore"
+          (onSelectionChange)="onLoadMoreOption($event)"
+          [value]="null"
+          >Mostrar más...</mat-option
+        >
+        <mat-option *ngIf="enfermedadLoadingMore" disabled>
+          <mat-progress-spinner diameter="18" mode="indeterminate"></mat-progress-spinner>
+          Cargando…
+        </mat-option>
+      </mat-autocomplete>
+      <!--campo oculto que guarda el código de la enfermedad-->
+      <input type="hidden" formControlName="idEnfermedad" />
+      <mat-hint>Escribe al menos 3 caracteres para buscar</mat-hint>
+      <mat-error>{{ getEnfermedadError() }}</mat-error>
+      <div *ngIf="noEnfermedadResults" style="color: #c62828; margin-top: 6px; font-size: 0.9em">
+        No hay resultados existentes para '{{ lastEnfermedadSearchTerm }}'
+      </div>
+    </mat-form-field>
+  </form>
+
+  <div *ngIf="error()" class="error-message-box">
+    <i class="fas fa-exclamation-triangle"></i>
+    <span>{{ error() }}</span>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button type="button" (click)="cancel()" [disabled]="saving()">Cancelar</button>
+  <button
+    mat-raised-button
+    color="primary"
+    type="button"
+    (click)="save()"
+    [disabled]="saving() || form.invalid"
+  >
+    {{ saving() ? 'Guardando…' : 'Guardar' }}
+  </button>
+</mat-dialog-actions>

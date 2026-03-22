@@ -1,0 +1,45 @@
+<form class="save-panel-form" autocomplete="off" (submit)="$event.preventDefault()">
+  <h2 class="title">{{ data.title }}</h2>
+
+  <p class="subtitle">Ingresa el nombre del panel y confirma con tu contraseña</p>
+
+  <!-- Señuelos para autofill -->
+  <input type="text" style="display:none" />
+  <input type="password" style="display:none" />
+
+  <div class="field">
+    <label for="panelName">Nombre del Panel</label>
+    <input
+      id="panelName"
+      type="text"
+      [(ngModel)]="panelName"
+      name="panel-name"
+      autocomplete="off"
+      placeholder="Ej. Panel de Cáncer de Mama"
+      class="text-input"
+      maxlength="200"
+    />
+  </div>
+
+  <div class="field">
+    <label for="password">Contraseña</label>
+    <input
+      id="password"
+      type="password"
+      [(ngModel)]="password"
+      name="confirm-password"
+      autocomplete="new-password"
+      placeholder="••••••••"
+      class="text-input"
+      maxlength="32"
+      (keyup.enter)="confirm()"
+    />
+  </div>
+
+  <div class="actions">
+    <button type="button" class="btn cancel" (click)="cancel()">Cancelar</button>
+    <button type="submit" class="btn confirm" (click)="confirm()" [disabled]="loading">
+      {{ loading ? 'Validando…' : data.confirmLabel }}
+    </button>
+  </div>
+</form>

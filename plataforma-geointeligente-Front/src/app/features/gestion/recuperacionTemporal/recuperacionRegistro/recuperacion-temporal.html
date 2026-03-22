@@ -1,0 +1,12 @@
+<h2 mat-dialog-title style="text-align:center">Recuperar Registro</h2>
+
+<mat-dialog-content>
+  <p style="font-size:16px;text-align:center">
+    ¿Deseas recuperar el registro <strong>#{{ data.idRegistro }}</strong>?
+  </p>
+</mat-dialog-content>
+
+<mat-dialog-actions align="center">
+  <button mat-raised-button color="primary" (click)="confirmarRecuperacion()">Recuperar</button>
+  <button mat-button (click)="cancelar()">Cancelar</button>
+</mat-dialog-actions>

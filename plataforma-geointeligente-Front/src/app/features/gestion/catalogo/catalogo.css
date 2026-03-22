@@ -1,0 +1,89 @@
+/* Tabs: clean horizontal tab headers with active underline */
+.tabs { margin: 0 0 1rem 0; }
+.tablist { display: flex; gap: 1.5rem; align-items: center; border-bottom: 1px solid #e6e6e6; padding-bottom: 0.5rem; }
+.tab { background: transparent; border: none; padding: 0; margin: 0; font-weight: 600; color: #6b7280; cursor: pointer; font-size: 0.95rem; }
+.tab:focus { outline: none; }
+.tab.active { color: #111827; position: relative; }
+.tab.active::after { content: ''; display: block; height: 2px; width: 40px; background: #111827; margin-top: 8px; }
+.tabpanel { padding-top: 1rem; }
+
+/* Toolbar & search input styling */
+.table-toolbar { margin-bottom: 12px; display: flex; align-items: center; }
+.table-toolbar .search-input { width: 360px; max-width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; background: #fff; color: #111827; box-shadow: 0 1px 2px rgba(16,24,40,0.03); transition: border-color .15s, box-shadow .15s; font-size: 0.95rem; }
+.table-toolbar .btn-add { margin-left: 12px; padding: 8px 12px; background: #0b69ff; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.9rem; }
+.table-toolbar .btn-add:hover { background: #0959d6; }
+.table-toolbar .search-input::placeholder { color: #9ca3af; }
+.table-toolbar .search-input:focus { outline: none; border-color: #60a5fa; box-shadow: 0 2px 6px rgba(96,165,250,0.12); }
+.table-toolbar .search-input[aria-invalid="true"] { border-color: #f87171; }
+
+@media (max-width: 600px) {
+	.table-toolbar { padding: 0 8px; }
+	.table-toolbar .search-input { width: 100%; }
+}
+
+/* States toolbar: left (search + hint) and right (buttons) layout */
+.states-toolbar { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.states-toolbar .states-left { display:flex; align-items:center; gap:12px; flex:1; }
+.states-toolbar .states-right { display:flex; align-items:center; gap:8px; }
+.states-hint { margin-left:0; }
+
+@media (max-width: 700px) {
+	.states-toolbar { flex-direction: column; align-items:stretch; gap:8px; }
+	.states-toolbar .states-left { width:100%; }
+	.states-toolbar .states-right { justify-content:flex-start; }
+}
+
+/* Dialog & form helpers */
+.catalogo .p-dialog .p-dialog-content { padding: 1rem; }
+.catalogo .p-dialog .full { width: 100%; box-sizing: border-box; padding: 8px; margin: 6px 0; border: 1px solid #d1d5db; border-radius: 4px; }
+.catalogo .p-dialog label { display:block; font-size:0.85rem; color:#374151; margin-top:8px; }
+.catalogo .dialog-footer { display:flex; gap:8px; justify-content:flex-end; padding:0.75rem 1rem; }
+.catalogo .dialog-footer .btn { padding:6px 10px; border-radius:4px; border:1px solid #cbd5e1; background:#fff; cursor:pointer; }
+.catalogo .dialog-footer .btn.primary { background:#0b69ff; color:#fff; border-color:#0b69ff; }
+.catalogo .p-dialog .p-dialog-header { font-weight:600; }
+
+/* Small hint/info box used in the Estados tab to guide selection */
+.catalogo-hint {
+	background: #f8fafc;
+	border: 1px solid #e6eef9;
+	color: #374151;
+	padding: 10px 12px;
+	border-radius: 8px;
+	font-size: 0.95rem;
+}
+
+/* Compact hint shown next to toolbar buttons */
+.catalogo-hint-mini {
+	background: transparent;
+	border: 0;
+	color: #475569;
+	font-size: 0.9rem;
+	padding: 4px 8px;
+}
+
+/* Ensure dialog z-index higher than table overlays */
+.p-dialog { z-index: 2100 !important; }
+/* Responsive: stack small screens */
+@media (max-width: 480px) { .tablist { gap: 1rem; } .tab { font-size: 0.9rem; } }
+
+/* Center table contents inside the Catalogo component tables */
+
+/* Stronger, host-scoped selectors to ensure cells inside PrimeNG tables are centered
+	 We target the rendered <table> inside the p-table/global-table wrapper. */
+:host ::ng-deep p-table.global-table table thead th,
+:host ::ng-deep p-table.global-table table tbody td,
+:host ::ng-deep .global-table table thead th,
+:host ::ng-deep .global-table table tbody td {
+	text-align: center !important;
+	vertical-align: middle !important;
+}
+
+/* Keep long text readable by allowing wrapping and breaking long words */
+:host ::ng-deep p-table.global-table table tbody td,
+:host ::ng-deep .global-table table tbody td {
+	white-space: normal !important;
+	word-break: break-word !important;
+}
+
+/* If you prefer numeric columns right-aligned, add a selector for them later */
+

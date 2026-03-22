@@ -1,0 +1,5 @@
+<div class="new-card">
+  <img [src]="image" alt="Imagen noticia" class="new-card-img" />
+  <div class="new-card-desc">{{ titulo || description }}</div>
+  <button class="new-card-btn" (click)="openDetalle()">Conocer más...</button>
+</div>

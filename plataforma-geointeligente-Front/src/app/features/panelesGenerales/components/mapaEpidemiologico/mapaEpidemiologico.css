@@ -1,0 +1,178 @@
+/* ===== MAP SECTION (ECharts) ===== */
+:host {
+  display: block;
+  min-height: 500px;
+}
+
+.map-container {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(10, 77, 166, 0.06);
+  overflow: hidden;
+}
+
+.map-area {
+  position: relative;
+  width: 100%;
+  height: 600px;
+}
+
+.map-echart {
+  width: 100%;
+  height: 100%;
+}
+
+/* Loading overlay */
+.map-loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+}
+
+.map-loading-spinner {
+  text-align: center;
+  color: #0A4DA6;
+}
+
+.map-loading-spinner mat-icon {
+  font-size: 32px;
+  width: 32px;
+  height: 32px;
+  animation: spin 1s linear infinite;
+}
+
+.map-loading-spinner p {
+  margin-top: 8px;
+  font-size: 0.9rem;
+  color: #64748b;
+}
+
+/* Indicator controls */
+.map-controls {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  display: flex;
+  gap: 6px;
+  z-index: 5;
+}
+
+.paint-btn {
+  background: white;
+  border: 1px solid #d1d5db;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: #374151;
+}
+
+.paint-btn:hover {
+  background: #f0f6ff;
+  border-color: #0A4DA6;
+  color: #0A4DA6;
+}
+
+.paint-btn.active {
+  background: #0A4DA6;
+  color: white;
+  border-color: #0A4DA6;
+}
+
+/* State detail */
+.state-detail-table {
+  background: white;
+  border-radius: 12px;
+  margin-top: 1rem;
+  box-shadow: 0 4px 20px rgba(10, 77, 166, 0.06);
+  overflow: hidden;
+}
+
+.state-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background: #0A4DA6;
+  color: white;
+}
+
+.state-detail-header h3 {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.1rem;
+}
+
+.close-detail-btn {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  transition: background 0.15s;
+}
+
+.close-detail-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.state-detail-content {
+  padding: 1.5rem;
+}
+
+.state-detail-content h4 {
+  margin: 0 0 12px 0;
+  color: #1e293b;
+  font-size: 1rem;
+}
+
+.state-info-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.state-info-table th,
+.state-info-table td {
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.state-info-table th {
+  color: #64748b;
+  font-weight: 600;
+  width: 40%;
+}
+
+.state-info-table td .unit {
+  font-size: 0.8rem;
+  color: #94a3b8;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .map-area {
+    height: 400px;
+  }
+
+  .map-controls {
+    flex-wrap: wrap;
+  }
+}

@@ -1,0 +1,88 @@
+<div class="paneles-generales-container">
+  <!-- Filtros -->
+  <app-filtros-panel
+    [parentLoading]="loading"
+    (filtersApplied)="onFiltersApplied($event)"
+    (exportPDF)="onExportPDF()">
+  </app-filtros-panel>
+
+  <!-- Pestañas de contenido -->
+  <div class="content-tabs">
+    <button
+      class="content-tab"
+      [class.active]="activeSubTab === 'graficas'"
+      (click)="setActiveTab('graficas')"
+    >
+      <mat-icon>bar_chart</mat-icon>
+      Gráficas
+    </button>
+    <button
+      class="content-tab"
+      [class.active]="activeSubTab === 'mapa'"
+      (click)="setActiveTab('mapa')"
+    >
+      <mat-icon>map</mat-icon>
+      Mapa
+    </button>
+    <button
+      class="content-tab"
+      [class.active]="activeSubTab === 'tabla'"
+      (click)="setActiveTab('tabla')"
+    >
+      <mat-icon>table_chart</mat-icon>
+      Tabla de Datos
+    </button>
+  </div>
+
+  <!-- ============ Pestaña Gráficas ============ -->
+  <div [hidden]="activeSubTab !== 'graficas'" class="graficas-tab-content">
+    <app-metricas-clave [indicadores]="indicadores"></app-metricas-clave>
+
+    <app-graficas-tab
+      [tendenciaData]="tendenciaData"
+      [edadesData]="edadesData"
+      [institucionesData]="institucionesData"
+      [estratosData]="estratosData"
+      [subgruposData]="subgruposData"
+      [diasEstanciaData]="diasEstanciaData"
+      [mapaData]="mapaData"
+      [loading]="loading">
+    </app-graficas-tab>
+  </div>
+
+  <!-- ============ Pestaña Mapa ============ -->
+  <div [hidden]="activeSubTab !== 'mapa'" class="mapa-content">
+    <app-mapa-epidemiologico
+      [active]="activeSubTab === 'mapa'"
+      [filters]="currentFilters"
+      [mapaData]="mapaData">
+    </app-mapa-epidemiologico>
+  </div>
+
+  <!-- ============ Pestaña Tabla de Datos ============ -->
+  <div [hidden]="activeSubTab !== 'tabla'" class="tabla-content">
+    <app-tabla-datos
+      [filters]="currentFilters"
+      [filtersKey]="tableFiltersKey">
+    </app-tabla-datos>
+  </div>
+
+  <!-- Loading Overlay -->
+  @if (loading) {
+    <div class="loading-overlay">
+      <div class="loading-spinner">
+        <div class="spinner"></div>
+        <p>Cargando datos epidemiológicos...</p>
+      </div>
+    </div>
+  }
+
+  <!-- Info Footer -->
+  <div class="info-footer">
+    <p>
+      <strong>Fuente de datos:</strong> Sistema de Vigilancia Epidemiológica -
+      Datos {{ backendConnected ? 'en tiempo real' : 'de demostración' }} • Última actualización:
+      {{ lastUpdate }}
+    </p>
+  </div>
+</div>

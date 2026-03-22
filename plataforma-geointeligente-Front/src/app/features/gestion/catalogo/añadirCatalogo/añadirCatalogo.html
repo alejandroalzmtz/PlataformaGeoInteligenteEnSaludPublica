@@ -1,0 +1,86 @@
+<div class="modal-root">
+	<h3>{{ isEdit ? 'Editar' : 'Nuevo' }} {{ (data?.kind || 'enfermedad') | titlecase }}</h3>
+
+	<form [formGroup]="form" (ngSubmit)="save()" class="form-grid">
+
+		<!-- Enfermedad -->
+		<ng-container *ngIf="!data?.kind || data?.kind === 'enfermedad'">
+			<mat-form-field appearance="outline">
+				<mat-label>Nombre</mat-label>
+				<input matInput maxlength="35" formControlName="nombreEnfermedad" required />
+			</mat-form-field>
+
+			<mat-form-field appearance="outline" class="full">
+				<mat-label>Descripción</mat-label>
+				<input matInput maxlength="35" formControlName="descripcion" />
+			</mat-form-field>
+
+			<mat-form-field appearance="outline">
+				<mat-label>Código ICD</mat-label>
+				<input matInput maxlength="35" formControlName="codigoICD" />
+			</mat-form-field>
+		</ng-container>
+
+		<!-- Servicio -->
+		<ng-container *ngIf="data?.kind === 'servicio' || data?.kind === 'servicio-medico'">
+			<mat-form-field appearance="outline">
+				<mat-label>Nombre del servicio</mat-label>
+				<input matInput maxlength="35" formControlName="nombreServicio" required />
+			</mat-form-field>
+			<!-- Ocultamos la descripción en el modal de servicio; se enviará null al backend -->
+				<input type="hidden" formControlName="descripcionSimple" />
+		</ng-container>
+
+		<!-- Derecho habiente / Motivo / Procedencia -->
+		<ng-container *ngIf="data?.kind === 'derecho' || data?.kind === 'derecho-habiente' || data?.kind === 'motivo' || data?.kind === 'motivo-egreso' || data?.kind === 'procedencia'">
+			<mat-form-field appearance="outline" class="full">
+				<mat-label>Descripción</mat-label>
+				<input matInput maxlength="35" formControlName="descripcionSimple" required />
+			</mat-form-field>
+		</ng-container>
+
+		<!-- Municipio -->
+		<ng-container *ngIf="data?.kind === 'municipio'">
+			<mat-form-field appearance="outline" class="full">
+				<mat-label>Nombre del municipio</mat-label>
+				<input matInput maxlength="35" formControlName="nombreMunicipio" required />
+			</mat-form-field>
+		</ng-container>
+
+		<!-- Localidad -->
+		<ng-container *ngIf="data?.kind === 'localidad'">
+			<mat-form-field appearance="outline" class="full">
+				<mat-label>Nombre de la localidad</mat-label>
+				<input matInput maxlength="35" formControlName="nombreLocalidad" required />
+			</mat-form-field>
+		</ng-container>
+
+		<!-- Estado -->
+		<ng-container *ngIf="data?.kind === 'estado'">
+			<mat-form-field appearance="outline">
+				<mat-label>Nombre del estado</mat-label>
+				<input matInput maxlength="35" formControlName="nombreEstado" required />
+			</mat-form-field>
+		</ng-container>
+
+		<!-- Rango de edad -->
+		<ng-container *ngIf="data?.kind === 'rango' || data?.kind === 'rango-edad'">
+			<!-- Rango sólo usa desde/hasta; no descripción -->
+			<mat-form-field appearance="outline">
+				<mat-label>Desde</mat-label>
+				<input matInput type="number" min="0" max="110" step="1" formControlName="desde" required />
+			</mat-form-field>
+			<mat-form-field appearance="outline">
+				<mat-label>Hasta</mat-label>
+				<input matInput type="number" min="0" max="110" step="1" formControlName="hasta" required />
+			</mat-form-field>
+		</ng-container>
+
+		<div class="actions" style="grid-column: 1 / -1; display:flex; gap:8px; justify-content:flex-end">
+			<button mat-stroked-button type="button" (click)="cancel()">Cancelar</button>
+			<button mat-flat-button color="primary" type="submit" [disabled]="saving()">Guardar</button>
+		</div>
+	</form>
+
+	<div *ngIf="error()" class="error">{{ error() }}</div>
+</div>

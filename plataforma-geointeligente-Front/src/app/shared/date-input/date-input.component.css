@@ -1,0 +1,141 @@
+/* ========== ESTILOS PARA DATE INPUT COMPONENT ========== */
+
+:host {
+  --date-accent: #0a4da6;
+  --date-accent-hover: #083a7f;
+  --date-accent-bg-hover: #e3f2fd;
+  --date-accent-bg-active: #bbdefb;
+}
+
+.date-input-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.date-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.75);
+  margin-bottom: 8px;
+}
+
+.date-label .required {
+  color: #d32f2f;
+}
+
+.date-inputs-container {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding: 8px;
+  background: #f5f5f5;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.date-part-input {
+  width: 54px;
+  height: 36px;
+  padding: 6px 4px;
+  border: 1px solid rgba(0, 0, 0, 0.23);
+  border-radius: 4px;
+  font-size: 15px;
+  text-align: center;
+  transition: all 0.2s;
+  appearance: textfield;
+  -moz-appearance: textfield;
+  background: white;
+}
+
+.date-part-input::-webkit-outer-spin-button,
+.date-part-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.date-part-input:hover {
+  border-color: rgba(0, 0, 0, 0.6);
+}
+
+.date-part-input:focus {
+  outline: none;
+  border-color: var(--date-accent);
+  border-width: 2px;
+  padding: 5px 3px;
+}
+
+.date-year-input {
+  width: 80px;
+}
+
+.date-separator {
+  color: rgba(0, 0, 0, 0.54);
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0 2px;
+}
+
+.calendar-btn {
+  height: 36px;
+  padding: 0 10px;
+  background: white;
+  border: 2px solid var(--date-accent);
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  color: var(--date-accent);
+  font-size: 15px;
+  margin-left: 4px;
+}
+
+.calendar-btn:hover {
+  background: var(--date-accent-bg-hover);
+  border-color: var(--date-accent-hover);
+  color: var(--date-accent-hover);
+  transform: scale(1.05);
+}
+
+.calendar-btn:active {
+  background: var(--date-accent-bg-active);
+  transform: scale(0.98);
+}
+
+.hidden-date-input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 0;
+  height: 0;
+}
+
+.error-message {
+  display: block;
+  color: #d32f2f;
+  font-size: 12px;
+  margin-top: 6px;
+  margin-left: 2px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .date-part-input {
+    width: 48px;
+    height: 34px;
+    font-size: 14px;
+  }
+
+  .date-year-input {
+    width: 72px;
+  }
+
+  .calendar-btn {
+    height: 34px;
+    padding: 0 8px;
+    font-size: 14px;
+  }
+}

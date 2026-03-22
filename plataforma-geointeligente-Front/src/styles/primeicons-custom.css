@@ -1,0 +1,13 @@
+/* Minimal placeholder for primeicons to avoid missing file errors.
+   Replace or extend with actual icon font or SVG usage as needed. */
+.pi {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  vertical-align: middle;
+  text-align: center;
+}
+.pi.pi-pencil:before { content: "✎"; }
+.pi.pi-trash:before { content: "🗑"; }
+.pi.pi-check:before { content: "✔"; }
+.pi.pi-times:before { content: "✖"; }

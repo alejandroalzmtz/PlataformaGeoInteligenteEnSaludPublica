@@ -1,0 +1,128 @@
+<div class="public-view-container">
+  <!-- Reuse global Nav component -->
+  <app-nav></app-nav>
+
+  <!-- ========== HERO SECTION ========== -->
+  <div class="hero-container" id="hero">
+    <div class="hero-background">
+      <div class="hero-overlay"></div>
+
+      <div class="hero-content">
+        <div class="logo-section-spacer"></div>
+
+        <div class="title-section">
+          <h1 class="main-title">Laboratorio Nacional De Geoposicionamiento 
+            e Información Fitosanitaria</h1>
+          <p class="description">
+            Plataforma de análisis geoespacial y epidemiológico que integra más de 20 años de datos de salud en México para fortalecer 
+            la toma de decisiones en salud pública.
+          </p>
+        </div>
+
+        <div class="stats-container">
+          <div class="stat-card" *ngFor="let stat of mainStats">
+            <div class="stat-number">{{ stat.number }}</div>
+            <div class="stat-label">{{ stat.label }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== FEATURES SECTION (Full-screen) ========== -->
+  <section class="guided-section full-screen-section" id="features">
+    <div class="section-banner">Sobre la Plataforma</div>
+
+    <div class="container section-content">
+      <section class="objective-section">
+        <h2 class="section-title-unified">Objetivo</h2>
+        <p class="objective-text">
+          Desarrollar una plataforma informática geointeligente con bases tecnológicas y científicas que apoyen la toma de decisiones en Salud Pública. La plataforma facilitará la visualización geoespacial de CLUES y modelos geoestadísticos para respaldar la priorización territorial y la toma de decisiones sanitarias basada en evidencia.
+        </p>
+        <h2 class="section-title-unified">Capacidades técnicas del sistema</h2>
+      </section>
+      
+      <div class="features-grid">
+        <div class="feature" *ngFor="let f of features">
+          <i [class]="f.icon + ' feature-icon'"></i>
+          <h3>{{ f.title }}</h3>
+          <p>{{ f.description }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CANCER DATA SECTION (Full-screen) ========== -->
+  <div class="guided-section full-screen-section" id="cancer">
+    <div class="section-banner">Datos Epidemiológicos de Cáncer de Mama</div>
+
+    <div class="container section-content">
+      <div class="section-header">
+        <p class="panel-intro">{{ panelIntro }}</p>
+      </div>
+
+      <div class="stats-grid">
+        @for (item of analysisItems; track item.key) {
+          <div class="stat-card-cancer">
+            <div class="stat-icon"><i [class]="item.icon"></i></div>
+            <div class="stat-number-cancer">{{ item.title }}</div>
+            <div class="stat-label-cancer">&nbsp;</div>
+            <div class="stat-subtitle">{{ item.detail }}</div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== NEWS SECTION (Full-screen) ========== -->
+  <section class="guided-section full-screen-section" id="news">
+    <div class="section-banner">Noticias</div>
+    
+    <div class="section-content news-carousel-wrapper">
+      <p-carousel 
+        [value]="displaySlides" 
+        [numVisible]="4" 
+        [numScroll]="1" 
+        [circular]="true" 
+        [responsiveOptions]="responsiveOptions"
+        [showIndicators]="true"
+        [showNavigators]="true">
+        <ng-template let-slide pTemplate="item">
+          <div class="news-carousel-item">
+            <app-new-card
+              [image]="slide.image"
+              [titulo]="slide.titulo"
+              [contenido]="slide.contenido"
+              [description]="slide.titulo">
+            </app-new-card>
+          </div>
+        </ng-template>
+      </p-carousel>
+    </div>
+  </section>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="public-footer" id="footer">
+    <div class="footer-content">
+      <p class="footer-text">&copy; 2025 Plataforma Geointeligente de Salud Pública</p>
+      <div class="footer-credits">
+        <p>Desarrollado por estudiantes de Ciencias de la Computación - UASLP</p>
+        <ul class="team-list">
+          <li><a href="https://www.linkedin.com/in/jonathan-lopez-isi/" target="_blank" rel="noopener noreferrer">Jonathan Lopez Castro</a></li>     
+          <li><a href="https://www.linkedin.com/in/alejandro-silva-165751344/" target="_blank" rel="noopener noreferrer">Yahir Alejandro Salazar Silva</a></li>
+          <li><a href="https://www.linkedin.com/in/yahiralejandromartinezalmendarez/" target="_blank" rel="noopener noreferrer">Yahir Alejandro Martinez Almendarez</a></li>
+          <li><a href="https://www.linkedin.com/in/claudia-espinosa-undefined-b326233b4/" target="_blank" rel="noopener noreferrer">Claudia Espinosa Guzmán</a></li>
+          <li><a href="https://www.linkedin.com/in/hector-salvador-contreras-%C3%A1lvarez-768285363/" target="_blank" rel="noopener noreferrer">Hector Salvador Contreras Alvarez</a></li>
+          <li><a href="https://www.linkedin.com/in/hugoesparzac/" target="_blank" rel="noopener noreferrer">Hugo Esparza Castañeda</a></li>
+        </ul>
+      </div>
+      <p class="footer-contact">Docentes a cargo:</p>
+      <ul class="team-list">
+        <li><a href="https://www.linkedin.com/in/raul-martinez-murillo/" target="_blank" rel="noopener noreferrer">Raúl Antonio Martínez Murillo</a></li>
+        <li><a href="https://www.linkedin.com/in/sandra-nava-251044b/" target="_blank" rel="noopener noreferrer">Sandra Edith Muñoz Nava</a></li>
+        <li><a href="https://www.linkedin.com/in/francisco-mart%C3%ADnez-a2b310137/" target="_blank" rel="noopener noreferrer">Francisco Eduardo Martínez Perez</a></li>
+        <li><a href="https://www.linkedin.com/in/oscar-reyes-c%C3%A1rdenas-61760a56/" target="_blank" rel="noopener noreferrer">Oscar Reyes Cardenas</a></li>
+      </ul>
+    </div>
+  </footer>
+</div>

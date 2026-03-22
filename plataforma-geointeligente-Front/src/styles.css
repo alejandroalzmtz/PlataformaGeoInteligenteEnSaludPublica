@@ -1,0 +1,479 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&display=swap');
+@import 'leaflet/dist/leaflet.css';
+@import '@fortawesome/fontawesome-free/css/all.min.css';
+/* PrimeNG styles loaded via CDN in index.html to avoid package export restrictions */
+
+/* Tipografía base - Open Sans */
+* {
+  font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 600;
+}
+
+#map {
+  background: #e5e5e5;
+  height: calc(100vh - 80px);
+  width: 100%;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+/* padding real dentro del contenedor del diálogo */
+.modal-alto .mat-mdc-dialog-container .mdc-dialog__surface {
+  padding: 24px !important;
+  border-radius: 14px !important;
+}
+
+/* Altura del modal */
+.modal-alto .mat-mdc-dialog-container {
+  max-height: 85vh !important;
+}
+
+
+html, body { height: 100%; }
+body { margin: 0; font-family: 'Open Sans', sans-serif; }
+
+/* Icon button hover colors
+   - edit / pencil buttons typically use color="primary"
+   - delete / trash buttons typically use color="warn"
+   We target mat-icon and svg inside mat-icon-button and include focus/active states.
+*/
+button[mat-icon-button][color="primary"]:hover .mat-icon,
+button[mat-icon-button][color="primary"]:focus .mat-icon,
+button[mat-icon-button][color="primary"]:active .mat-icon,
+button[mat-icon-button][color="primary"]:hover svg,
+button[mat-icon-button][color="primary"]:focus svg,
+button[mat-icon-button][color="primary"]:active svg {
+  color: #0A4DA6 !important;
+  fill: #0A4DA6 !important;
+}
+
+button[mat-icon-button][color="warn"]:hover .mat-icon,
+button[mat-icon-button][color="warn"]:focus .mat-icon,
+button[mat-icon-button][color="warn"]:active .mat-icon,
+button[mat-icon-button][color="warn"]:hover svg,
+button[mat-icon-button][color="warn"]:focus svg,
+button[mat-icon-button][color="warn"]:active svg {
+  color: #E74C3C !important;
+  fill: #E74C3C !important;
+}
+
+/* Global PrimeNG table styles to keep a consistent look across the app */
+.p-table table {
+  border-collapse: collapse;
+  width: 100%;
+  font-family: inherit;
+}
+
+.p-table thead th {
+  background: #f5f7fa;
+  color: #222;
+  border-bottom: 1px solid #e6e9ef;
+  padding: 0.75rem 0.5rem;
+  text-align: left;
+}
+
+.p-table tbody td {
+  padding: 0.6rem 0.5rem;
+  border-bottom: 1px solid #eee;
+}
+
+.p-table tbody tr:hover {
+  background: #fbfcfe;
+}
+
+.p-paginator {
+  margin-top: 0.5rem;
+}
+
+/* Custom paginator styling to match design in screenshot */
+.p-paginator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 0.5rem 0.25rem;
+}
+
+.p-paginator .p-paginator-pages {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.p-paginator .p-paginator-page,
+.p-paginator .p-paginator-last,
+.p-paginator .p-paginator-first,
+.p-paginator .p-paginator-prev,
+.p-paginator .p-paginator-next {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.p-paginator .p-paginator-page {
+  min-width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 50%;
+  background: transparent;
+  color: #222;
+  border: 1px solid transparent;
+  font-weight: 500;
+}
+
+.p-paginator .p-paginator-page:hover {
+  background: #f0f4f8;
+}
+
+.p-paginator .p-paginator-current,
+.p-paginator .p-paginator-page.p-highlight {
+  background: #07102b; /* dark navy */
+  color: #fff !important;
+  border-radius: 50%;
+  min-width: 2.4rem;
+  height: 2.4rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.p-paginator .p-paginator-rpp,
+.p-paginator .p-paginator-report {
+  color: #666;
+}
+
+/* rows-per-page dropdown small rounded style */
+.p-paginator .p-dropdown,
+.p-paginator .p-selectbutton {
+  border-radius: 8px;
+}
+
+@media (max-width: 900px) {
+  .p-paginator .p-paginator-page,
+  .p-paginator .p-paginator-current {
+    min-width: 1.8rem;
+    height: 1.8rem;
+  }
+}
+
+/* Layout for filters: ensure search is left and paginator sits to the right */
+.filters {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.filters .search-input {
+  flex: 1;
+  max-width: 680px;
+}
+
+.filters .paginator-wrap {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* column wrapper to place report above paginator */
+.paginator-column {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.showing-report {
+  font-size: 0.95rem;
+  color: #6b7280;
+}
+
+/* Global native select styling so the select in page-level filters matches design */
+.native-select {
+  min-width: 3.2rem;
+  padding: 0.35rem 0.6rem;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  color: #111827;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.filters .native-select {
+  margin-left: 6px;
+}
+
+/* PrimeNG dialog fallback styling (global) --------------------------------- */
+/* These rules ensure the p-dialog has a visible background, shadow and mask
+   even if the theme is not loaded. They are deliberately broad to match
+   multiple PrimeNG versions' class names. */
+.p-overlaypanel, .p-overlay-panel, .p-overlay-pane, .p-dialog, .p-dialog .p-dialog {
+  background: #fff !important;
+  color: #222 !important;
+}
+
+.p-dialog {
+  border-radius: 10px !important;
+  box-shadow: 0 12px 32px rgba(2,6,23,0.18) !important;
+  padding: 0 !important;
+  max-width: 760px !important;
+  width: auto !important;
+}
+
+.p-dialog .p-dialog-titlebar {
+  background: transparent !important;
+  border-bottom: 1px solid #e6e9ef !important;
+  padding: 0.6rem 1rem !important;
+}
+
+.p-dialog .p-dialog-title {
+  font-weight: 600 !important;
+  color: #072a50 !important;
+}
+
+.p-dialog .p-dialog-content {
+  padding: 1rem !important;
+}
+
+.p-dialog .p-dialog-footer {
+  padding: 0.6rem 1rem !important;
+  display: flex !important;
+  gap: 0.5rem !important;
+  justify-content: flex-end !important;
+}
+
+/* Mask / overlay backdrop */
+.p-dialog-mask, .p-overlay-mask, .p-component-overlay, .p-overlay {
+  background: rgba(0,0,0,0.46) !important;
+  z-index: 9998 !important;
+}
+
+/* ensure overlay pane above other elements */
+.p-overlay-pane, .p-dialog {
+  z-index: 9999 !important;
+}
+
+/* Inputs inside dialog - nicer default appearance */
+.p-dialog input, .p-dialog textarea, .p-dialog .p-inputtext, .p-dialog .p-inputtextarea,
+.p-dialog .p-inputtext:focus, .p-dialog .p-inputtextarea:focus {
+  width: 100% !important;
+  box-sizing: border-box !important;
+  padding: 0.5rem !important;
+  border: 1px solid #e6e9ef !important;
+  border-radius: 6px !important;
+  margin-bottom: 0.75rem !important;
+  outline: none !important;
+}
+
+.p-dialog .p-dialog-titlebar-close {
+  background: transparent !important;
+  border: none !important;
+  color: #666 !important;
+}
+
+/* smaller footprint on mobile */
+@media (max-width: 640px) {
+  .p-dialog { width: calc(100% - 24px) !important; margin: 12px !important; }
+}
+
+/* End PrimeNG dialog fallback styling ------------------------------------- */
+
+/* Dialog footer buttons: primary (Guardar) and secondary (Cancelar) */
+.p-dialog .p-dialog-footer .p-button {
+  min-width: 96px;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  font-weight: 600;
+  box-shadow: none !important;
+  border: 1px solid transparent !important;
+}
+
+/* Primary action - prefer class p-button-primary but fallback to first button */
+.p-dialog .p-dialog-footer .p-button.p-button-primary,
+.p-dialog .p-dialog-footer .p-button.primary,
+.p-dialog .p-dialog-footer .p-button:first-child {
+  background: linear-gradient(180deg,#0a4da6 0%, #0a3a86 100%) !important;
+  color: #fff !important;
+}
+
+/* Secondary action - cancel */
+.p-dialog .p-dialog-footer .p-button.p-button-secondary,
+.p-dialog .p-dialog-footer .p-button.secondary,
+.p-dialog .p-dialog-footer .p-button:last-child {
+  background: transparent !important;
+  color: #374151 !important;
+  border: 1px solid #d1d5db !important;
+}
+
+.p-dialog .p-dialog-footer .p-button:hover {
+  filter: brightness(0.95) !important;
+}
+
+.p-dialog .p-dialog-footer .p-button:active {
+  transform: translateY(1px) !important;
+}
+
+.p-dialog .p-dialog-footer .p-button[disabled] {
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
+}
+
+/* Strong overrides to ensure PrimeNG buttons render visibly inside dialogs */
+.p-dialog .p-dialog-footer, .p-dialog .p-footer {
+  padding: 0.75rem 1rem !important;
+  background: transparent !important;
+}
+
+.p-dialog .p-dialog-footer button.p-button,
+.p-dialog button.p-button,
+.p-dialog .p-button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5rem !important;
+  min-width: 88px !important;
+  padding: 0.5rem 0.9rem !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  box-shadow: none !important;
+  text-decoration: none !important;
+  line-height: 1 !important;
+}
+
+/* Primary (Guardar) */
+.p-dialog .p-dialog-footer button.p-button.p-button-primary,
+.p-dialog .p-dialog-footer button.p-button.primary,
+.p-dialog .p-dialog-footer .p-button-primary {
+  background: linear-gradient(180deg,#0a4da6 0%, #0a3a86 100%) !important;
+  color: #fff !important;
+  border: 1px solid rgba(10,77,166,0.9) !important;
+}
+.p-dialog .p-dialog-footer button.p-button.p-button-primary .p-button-label,
+.p-dialog .p-dialog-footer .p-button-primary .p-button-label {
+  color: #fff !important;
+}
+
+/* Secondary (Cancelar) */
+.p-dialog .p-dialog-footer button.p-button.p-button-secondary,
+.p-dialog .p-dialog-footer button.p-button.secondary,
+.p-dialog .p-dialog-footer .p-button-secondary {
+  background: transparent !important;
+  color: #374151 !important;
+  border: 1px solid #d1d5db !important;
+}
+.p-dialog .p-dialog-footer button.p-button.p-button-secondary .p-button-label,
+.p-dialog .p-dialog-footer .p-button-secondary .p-button-label {
+  color: #374151 !important;
+}
+
+/* Ensure inner label spans are visible */
+.p-dialog .p-button .p-button-label,
+.p-dialog button.p-button .p-button-label {
+  color: inherit !important;
+  font-weight: 600 !important;
+}
+
+/* Hide close icon if still rendered */
+.p-dialog .p-dialog-titlebar .p-dialog-titlebar-close,
+.p-dialog .p-dialog-titlebar .p-dialog-close {
+  display: none !important;
+}
+
+/* extra selectors to hide other possible close buttons/icons */
+.p-dialog .p-dialog-titlebar button[aria-label="Close"],
+.p-dialog .p-dialog-titlebar .p-dialog-titlebar-icon,
+.p-dialog .p-dialog-titlebar .p-dialog-close-icon,
+.p-dialog .p-dialog-titlebar .pi-times,
+.p-dialog .p-dialog-titlebar .pi pi-times {
+  display: none !important;
+}
+
+/* Small-screen adjustments */
+
+/* Footer team links: improve contrast, layout and 'Docentes a cargo' */
+.public-footer .footer-credits .team-list,
+.public-footer .team-list {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  justify-content: center;
+  align-items: center;
+}
+.public-footer .footer-credits .team-list li,
+.public-footer .team-list li {
+  margin: 0;
+}
+.public-footer .footer-contact {
+  color: #cfe8ff;
+  text-align: center;
+  margin: 12px 0 6px;
+  font-weight: 600;
+}
+.public-footer .footer-credits .team-list a,
+.public-footer .team-list a {
+  color: #cfe8ff; /* soft light blue for contrast on dark footer */
+  text-decoration: none;
+  padding: 2px 0;
+  transition: color 120ms ease, text-decoration-color 120ms ease;
+  font-weight: 600;
+}
+.public-footer .footer-credits .team-list a:hover,
+.public-footer .team-list a:hover,
+.public-footer .footer-credits .team-list a:focus,
+.public-footer .team-list a:focus {
+  color: #ffffff;
+  text-decoration: underline;
+  outline: none;
+}
+
+@media (max-width: 640px) {
+  .public-footer .footer-credits .team-list,
+  .public-footer .team-list {
+    gap: 8px 12px;
+    justify-content: center;
+  }
+  .public-footer .footer-contact { font-size: 0.95rem; }
+}
+
+@media (max-width: 640px) {
+  .p-dialog .p-dialog-footer button.p-button { min-width: 72px !important; padding: 0.45rem 0.6rem !important; }
+}
+
+/* Extra forced visibility for catalogo edit dialog buttons (backup) */
+#catalogo-edit-cancel, #catalogo-edit-save {
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 36px !important;
+  padding: 0.5rem 0.9rem !important;
+  border-radius: 8px !important;
+  line-height: 1 !important;
+}
+
+/* Ensure footer container is visible and laid out */
+.p-dialog .dialog-footer, .p-dialog .p-dialog-footer {
+  display: flex !important;
+  justify-content: flex-end !important;
+  gap: 8px !important;
+  padding: 0.6rem 1rem !important;
+  visibility: visible !important;
+}
+
+/* As a last resort, make any button inside p-dialog visible */
+.p-dialog button { visibility: visible !important; opacity: 1 !important; display: inline-flex !important; }
+
+

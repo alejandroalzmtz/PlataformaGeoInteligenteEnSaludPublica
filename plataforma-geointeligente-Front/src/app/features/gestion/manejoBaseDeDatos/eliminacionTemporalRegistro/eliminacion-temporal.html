@@ -1,0 +1,10 @@
+<h2 mat-dialog-title>Eliminar registro temporalmente</h2>
+
+<mat-dialog-content>
+  <p>¿Seguro que deseas eliminar temporalmente el registro <b>{{ data.idRegistro }}</b>?</p>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button color="warn" (click)="confirmarEliminacion()">Eliminar</button>
+  <button mat-button mat-dialog-close (click)="cancelar()">Cancelar</button>
+</mat-dialog-actions>

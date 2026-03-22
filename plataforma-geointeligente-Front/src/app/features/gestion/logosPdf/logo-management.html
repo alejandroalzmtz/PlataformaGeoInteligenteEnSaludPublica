@@ -1,0 +1,192 @@
+<div class="logo-management-container">
+
+  <div class="header-section">
+    <h1 class="page-title">
+      <i class="pi pi-image"></i>
+      Gestión de Logos PDF
+    </h1>
+    <p class="page-description">
+      Administra los logos que se mostrarán en las exportaciones PDF. Puedes agregar, eliminar y seleccionar el logo activo.
+    </p>
+  </div>
+
+  <!-- Información de Almacenamiento -->
+  <div class="storage-info-section" *ngIf="storageInfo.logosCount > 0">
+    <div class="storage-card">
+      <div class="storage-stats">
+        <div class="stat-item">
+          <i class="pi pi-database"></i>
+          <div class="stat-content">
+            <span class="stat-value">{{ storageInfo.totalSizeMB }} MB</span>
+            <span class="stat-label">Usado</span>
+          </div>
+        </div>
+        <div class="stat-item">
+          <i class="pi pi-images"></i>
+          <div class="stat-content">
+            <span class="stat-value">{{ storageInfo.logosCount }}</span>
+            <span class="stat-label">Logos</span>
+          </div>
+        </div>
+      </div>
+      <button
+        pButton
+        type="button"
+        label="Limpiar Todo"
+        class="p-button-danger p-button-sm"
+        (click)="clearAllLogos()"
+        title="Eliminar todos los logos">
+      </button>
+    </div>
+  </div>
+
+  <!-- Sección: Logo Activo -->
+  <div class="active-logo-section">
+    <p-card header="Logo Activo" [style]="{ 'margin-bottom': '2rem' }">
+      <div class="active-logo-content" *ngIf="activeLogo; else noActiveLogo">
+        <div class="logo-preview-large">
+          <img [src]="getLogoImageUrl(activeLogo)" [alt]="activeLogo.nombre" />
+        </div>
+        <div class="logo-info">
+          <h3>{{ activeLogo.nombre }}</h3>
+          <div class="info-item">
+            <i class="pi pi-file"></i>
+            <span>Formato: {{ activeLogo.formato }}</span>
+          </div>
+          <div class="info-item">
+            <i class="pi pi-cloud-upload"></i>
+            <span>Tamaño: {{ formatFileSize(activeLogo.tamanio) }}</span>
+          </div>
+          <div class="info-item">
+            <i class="pi pi-calendar"></i>
+            <span>Cargado: {{ formatDate(activeLogo.fechaSubida) }}</span>
+          </div>
+          <div class="active-badge">
+            <i class="pi pi-check-circle"></i>
+            Logo en uso
+          </div>
+        </div>
+      </div>
+      <ng-template #noActiveLogo>
+        <div class="no-active-logo">
+          <i class="pi pi-info-circle"></i>
+          <p>No hay logo activo seleccionado. Las exportaciones PDF se generarán sin logo.</p>
+        </div>
+      </ng-template>
+    </p-card>
+  </div>
+
+  <!-- Sección: Agregar Logo -->
+  <div class="upload-section">
+    <p-card header="Agregar Nuevo Logo" [style]="{ 'margin-bottom': '2rem' }">
+      <div class="upload-content">
+        <p-fileUpload
+          #fileUploader
+          name="logo"
+          accept=".png,.jpg,.jpeg"
+          [multiple]="true"
+          (onSelect)="onFileSelect($event)"
+          [auto]="true"
+          chooseLabel="Seleccionar imágenes"
+          chooseIcon="pi pi-images"
+          cancelLabel="Cancelar"
+          [showUploadButton]="false"
+          [showCancelButton]="false">
+          <ng-template pTemplate="content">
+            <div class="upload-dropzone"
+                 (click)="fileUploader.choose()"
+                 (dragover)="onDragOver($event)"
+                 (dragleave)="onDragLeave($event)"
+                 (drop)="onDrop($event, fileUploader)"
+                 [class.drag-over]="isDragOver">
+              <div class="dropzone-icon-wrapper">
+                <i class="pi pi-cloud-upload"></i>
+              </div>
+              <h3 class="dropzone-title">Arrastra tus imágenes aquí</h3>
+              <p class="dropzone-subtitle">o haz clic para seleccionar</p>
+              <div class="dropzone-formats">
+                <span class="format-badge">
+                  <i class="pi pi-file"></i> PNG
+                </span>
+                <span class="format-badge">
+                  <i class="pi pi-file"></i> JPG
+                </span>
+                <span class="format-badge">
+                  <i class="pi pi-file"></i> JPEG
+                </span>
+              </div>
+              <small class="dropzone-hint">Solo se permiten archivos de imagen (.png, .jpg, .jpeg)</small>
+            </div>
+          </ng-template>
+        </p-fileUpload>
+      </div>
+    </p-card>
+  </div>
+
+  <!-- Sección: Lista de Logos -->
+  <div class="logos-list-section">
+    <p-card header="Logos Disponibles">
+      <div class="logos-grid" *ngIf="logos.length > 0; else noLogos">
+        <div
+          *ngFor="let logo of logos"
+          class="logo-card"
+          [class.active]="isActiveLogo(logo)">
+
+          <div class="logo-preview">
+            <img [src]="getLogoImageUrl(logo)" [alt]="logo.nombre" />
+            <div class="logo-overlay" *ngIf="isActiveLogo(logo)">
+              <i class="pi pi-check-circle"></i>
+              <span>Activo</span>
+            </div>
+          </div>
+
+          <div class="logo-details">
+            <h4 class="logo-name" [title]="logo.nombre">{{ logo.nombre }}</h4>
+            <div class="logo-meta">
+              <span class="meta-item">
+                <i class="pi pi-file"></i>
+                {{ logo.formato }}
+              </span>
+              <span class="meta-item">
+                <i class="pi pi-cloud-upload"></i>
+                {{ formatFileSize(logo.tamanio) }}
+              </span>
+            </div>
+            <div class="logo-date">
+              <i class="pi pi-calendar"></i>
+              {{ formatDate(logo.fechaSubida) }}
+            </div>
+          </div>
+
+          <div class="logo-actions">
+            <button
+              pButton
+              type="button"
+              class="p-button-success p-button-sm"
+              label="Activar"
+              [disabled]="isActiveLogo(logo)"
+              (click)="setActiveLogo(logo)"
+              [title]="isActiveLogo(logo) ? 'Ya está activo' : 'Usar este logo'">
+            </button>
+            <button
+              pButton
+              type="button"
+              class="p-button-danger p-button-sm"
+              label="Eliminar"
+              [disabled]="isActiveLogo(logo)"
+              (click)="deleteLogo(logo)"
+              [title]="isActiveLogo(logo) ? 'No puedes eliminar el logo activo' : 'Eliminar logo'">
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <ng-template #noLogos>
+        <div class="no-logos">
+          <i class="pi pi-images"></i>
+          <p>No hay logos cargados. Agrega uno usando el formulario de arriba.</p>
+        </div>
+      </ng-template>
+    </p-card>
+  </div>
+</div>
